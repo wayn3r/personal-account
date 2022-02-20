@@ -1,7 +1,7 @@
-import { Email } from '../domain/Email'
-import { User } from '../domain/User'
-import { UserId } from '../domain/UserId'
-import { UserName } from '../domain/UserName'
+import { Email } from 'contexts/user/domain/Email'
+import { User } from 'contexts/user/domain/User'
+import { UserId } from 'contexts/user/domain/UserId'
+import { UserName } from 'contexts/user/domain/UserName'
 import { CreateUserCommand } from './CreateUserCommand'
 import { UserCreator } from './UserCreator'
 

@@ -7,8 +7,7 @@ export class PostTransactionController {
     constructor(private readonly transactionService: TransactionService) {}
 
     @Post('add')
-    createTrasaction(@Body() transaction: AddTransactionDto) {
-        this.transactionService.save(transaction)
-        return transaction
+    async createTrasaction(@Body() transaction: AddTransactionDto) {
+        return await this.transactionService.save(transaction)
     }
 }

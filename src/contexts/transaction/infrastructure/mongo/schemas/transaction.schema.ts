@@ -19,6 +19,9 @@ export class Transaction {
     @Prop({ required: true })
     name: string
 
+    @Prop()
+    description: string
+
     @Prop({ required: true })
     credit: number
 

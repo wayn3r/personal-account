@@ -2,6 +2,7 @@ import {
     IsDateString,
     IsNotEmpty,
     IsNumber,
+    IsOptional,
     IsString,
     Min,
     MinLength,
@@ -12,6 +13,11 @@ export class AddTransactionDto {
     @IsString()
     @MinLength(3)
     name: string
+
+    @IsString()
+    @MinLength(3)
+    @IsOptional()
+    description?: string
 
     @IsNotEmpty()
     @IsNumber()

@@ -5,7 +5,7 @@ export type TransactionDocument = Transaction & Document
 
 @Schema({
     toJSON: {
-        transform: (_, doc) => {
+        transform(_, doc) {
             const { _id, ...transaction } = doc
             return {
                 id: _id,

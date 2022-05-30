@@ -3,7 +3,18 @@ import { Document } from 'mongoose'
 
 export type TransactionDocument = Transaction & Document
 
-@Schema()
+@Schema({
+    toJSON: {
+        transform: (_, doc) => {
+            const { _id, ...transaction } = doc
+            return {
+                id: _id,
+                ...transaction,
+            }
+        },
+        versionKey: false,
+    },
+})
 export class Transaction {
     @Prop({ required: true })
     name: string

@@ -1,10 +1,10 @@
-import { PaginationQuery } from 'shared/pagination-query'
+import { PaginationQuery } from 'shared/dtos/pagination-query'
+import { RegisterTransactionDto } from 'transaction/application/dtos/register-transaction.dto'
 import { Transaction } from './transaction'
-import { TransactionQuery } from './transaction-query'
 
 export interface TransactionRepository {
-    findAll(query: PaginationQuery & TransactionQuery): Promise<Transaction[]>
-    createOne(transaction: Transaction): Promise<void>
-    updateOne(transaction: Transaction): Promise<void>
-    findById(id: string): Promise<Transaction>
+  findOne(id: string): Promise<Transaction>
+  findAll(query: PaginationQuery): Promise<Transaction[]>
+  register(transaction: RegisterTransactionDto): Promise<void>
+  remove(id: string): Promise<void>
 }

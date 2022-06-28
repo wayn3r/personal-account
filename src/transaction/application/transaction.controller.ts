@@ -1,21 +1,49 @@
-import { Controller, Get, Inject, Query } from '@nestjs/common'
-import { InjectionConfig } from 'injection-config'
+import { RemoveTransactionCommand } from './commands/remove-transaction.command-handler'
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common'
+import { CommandBus, QueryBus } from '@nestjs/cqrs'
+import { PaginationQuery } from 'shared/dtos/pagination-query'
 import { Transaction } from '../domain/transaction'
-import { TransactionRepository } from '../domain/transaction-repository'
-import { TransactionQueryDto } from './transaction-query.dto'
+import { RegisterTransactionCommand } from './commands/register-transaction.command-handler'
+import { RegisterTransactionDto } from './dtos/register-transaction.dto'
+import { GetTransactionsQuery } from './queries/get-transactions.query-handler'
+import { GetTransactionQuery } from './queries/get-transaction.query-handler'
 
-@Controller('transaction')
-export class TransactionController {
-    constructor(
-        @Inject(InjectionConfig.TRANSACTION_REPOSITORY)
-        private readonly transactionRepository: TransactionRepository,
-    ) {}
+@Controller('transactions')
+export class GetTransactionController {
+  constructor(
+    private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+  ) {}
 
-    @Get()
-    public async findAll(
-        @Query() query: TransactionQueryDto,
-    ): Promise<Transaction[]> {
-        const transactions = await this.transactionRepository.findAll(query)
-        return transactions
-    }
+  @Get()
+  public async findAll(@Query() query: PaginationQuery): Promise<Transaction[]> {
+    const result = await this.queryBus.execute<GetTransactionsQuery, Transaction[]>(
+      new GetTransactionsQuery(query),
+    )
+
+    return result
+  }
+
+  @Get(':id')
+  public async findOne(@Param() id: string) {
+    const result = await this.queryBus.execute<GetTransactionQuery, Transaction>(
+      new GetTransactionQuery(id),
+    )
+
+    return result
+  }
+
+  @Post('register')
+  public async register(@Body() transaction: RegisterTransactionDto): Promise<void> {
+    await this.commandBus.execute<RegisterTransactionCommand, void>(
+      new RegisterTransactionCommand(transaction),
+    )
+  }
+
+  @Delete('remove/:id')
+  public async remove(@Param() id: string): Promise<void> {
+    await this.commandBus.execute<RemoveTransactionCommand, void>(
+      new RemoveTransactionCommand(id),
+    )
+  }
 }

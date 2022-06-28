@@ -25,8 +25,8 @@
             {
                 "singleQuote": true,
                 "trailingComma": "all",
-                "printWidth": 80,
-                "tabWidth": 4,
+                "printWidth": 90,
+                "tabWidth": 2,
                 "semi": false,
                 "endOfLine": "auto"
             }

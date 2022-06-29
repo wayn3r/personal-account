@@ -1,12 +1,13 @@
 import { RemoveTransactionCommand } from './commands/remove-transaction.command-handler'
 import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
-import { PaginationQuery } from 'shared/dtos/pagination-query'
+import { PaginationQuery } from 'shared/infrastruture/dtos/pagination-query'
 import { Transaction } from '../domain/transaction'
 import { RegisterTransactionCommand } from './commands/register-transaction.command-handler'
-import { RegisterTransactionDto } from './dtos/register-transaction.dto'
+import { RegisterTransactionDto } from '../infrastructure/dtos/register-transaction.dto'
 import { GetTransactionsQuery } from './queries/get-transactions.query-handler'
 import { GetTransactionQuery } from './queries/get-transaction.query-handler'
+import { Paginated } from 'shared/infrastruture/decorators/paginated.decorator'
 
 @Controller('transactions')
 export class GetTransactionController {
@@ -16,7 +17,11 @@ export class GetTransactionController {
   ) {}
 
   @Get()
-  public async findAll(@Query() query: PaginationQuery): Promise<Transaction[]> {
+  public async findAll(
+    @Paginated()
+    @Query()
+    query: PaginationQuery,
+  ): Promise<Transaction[]> {
     const result = await this.queryBus.execute<GetTransactionsQuery, Transaction[]>(
       new GetTransactionsQuery(query),
     )

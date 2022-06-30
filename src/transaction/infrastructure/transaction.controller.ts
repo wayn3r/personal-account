@@ -34,7 +34,7 @@ export class GetTransactionController {
   }
 
   @Get(':id')
-  public async findOne(@Param() id: string) {
+  public async findOne(@Param() id: string): Promise<Transaction> {
     const result = await this.queryBus.execute<GetTransactionQuery, Transaction>(
       new GetTransactionQuery(id),
     )

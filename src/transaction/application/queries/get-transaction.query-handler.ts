@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common'
 import { IQuery, IQueryHandler, QueryHandler } from '@nestjs/cqrs'
 import { InjectionConfig } from 'injection-config'
 import { Transaction } from 'transaction/domain/transaction'
-import { TransactionRepository } from 'transaction/domain/transaction-repository'
+import { TransactionRepository } from 'transaction/domain/transaction.repository'
 
 export class GetTransactionQuery implements IQuery {
   constructor(public readonly id: string) {}

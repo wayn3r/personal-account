@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs'
 import { InjectionConfig } from 'injection-config'
-import { TransactionRepository } from 'transaction/domain/transaction-repository'
+import { TransactionRepository } from 'transaction/domain/transaction.repository'
 
 export class RemoveTransactionCommand implements ICommand {
   constructor(public readonly id: string) {}

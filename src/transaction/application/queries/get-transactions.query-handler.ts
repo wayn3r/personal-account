@@ -4,7 +4,7 @@ import { InjectionConfig } from 'injection-config'
 import { GetItemsPaginatedQuery } from 'shared/domain/get-items-paginated-query'
 import { PaginatedDto } from 'shared/infrastruture/dtos/paginated-dto'
 import { Transaction } from 'transaction/domain/transaction'
-import { TransactionRepository } from 'transaction/domain/transaction-repository'
+import { TransactionRepository } from 'transaction/domain/transaction.repository'
 
 export class GetTransactionsQuery implements IQuery {
   constructor(public readonly paginationQuery: GetItemsPaginatedQuery) {}

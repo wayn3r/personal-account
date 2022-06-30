@@ -1,7 +1,8 @@
+import { Mapper } from 'shared/domain/mapper'
 import { Transaction } from 'transaction/domain/transaction'
 import { TransactionDocument } from '../schemas/transaction.schema'
 
-export class TransactionMapper {
+export class TransactionMapper extends Mapper<TransactionDocument, Transaction> {
   public map(from: TransactionDocument): Transaction {
     return new Transaction({
       id: from._id,
@@ -16,9 +17,5 @@ export class TransactionMapper {
       tags: from.tags,
       active: from.active,
     })
-  }
-
-  public mapList(from: TransactionDocument[]): Transaction[] {
-    return from.map((t) => this.map(t))
   }
 }

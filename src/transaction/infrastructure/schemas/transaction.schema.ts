@@ -1,15 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import { InjectionConfig } from 'injection-config'
+import { Document, Types } from 'mongoose'
+import { OPTIONS } from 'shared/infrastruture/schemas/schema-config'
 
-@Schema({
-  toJSON: {
-    transform: (_, doc) => {
-      const { _id, ...rest } = doc
-      return { id: _id, ...rest }
-    },
-    versionKey: false,
-  },
-})
+@Schema({ ...OPTIONS })
 class TransactionDocument extends Document {
   @Prop({ required: true, type: String })
   name: string
@@ -35,7 +29,11 @@ class TransactionDocument extends Document {
   @Prop({ required: true, type: String })
   moneyState: string
 
-  @Prop({ required: true, type: Array, default: [] })
+  @Prop({
+    required: true,
+    type: [{ type: Types.ObjectId, ref: InjectionConfig.TAG_MODEL }],
+    default: [],
+  })
   tags: string[]
 
   @Prop({ required: true, type: Boolean, default: true })

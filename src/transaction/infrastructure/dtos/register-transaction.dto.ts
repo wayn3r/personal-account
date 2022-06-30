@@ -2,6 +2,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsBoolean,
+  IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -52,7 +53,7 @@ export class RegisterTransactionDto implements RegisterTransaction {
   @IsOptional()
   @IsArray({ message: 'Transaction tags must be an array' })
   @IsNotEmpty({ message: 'A transaction tag must not be an empty string', each: true })
-  @IsString({ message: 'Each transaction tag must be a string', each: true })
+  @IsMongoId({ message: 'Each transaction tag must be a valid id', each: true })
   @ArrayMinSize(1, { message: 'Transaction tags must have at least 1 tag' })
   tags?: string[]
 }

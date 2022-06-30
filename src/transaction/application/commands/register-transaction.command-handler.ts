@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs'
 import { InjectionConfig } from 'injection-config'
 import { RegisterTransaction } from 'transaction/domain/register-transaction'
-import { TransactionRepository } from 'transaction/domain/transaction-repository'
+import { TransactionRepository } from 'transaction/domain/transaction.repository'
 
 export class RegisterTransactionCommand implements ICommand {
   public constructor(public readonly transaction: RegisterTransaction) {}

@@ -1,13 +1,17 @@
-import { RemoveTransactionCommand } from './commands/remove-transaction.command-handler'
 import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { PaginationQuery } from 'shared/infrastruture/dtos/pagination-query'
 import { Transaction } from '../domain/transaction'
-import { RegisterTransactionCommand } from './commands/register-transaction.command-handler'
 import { RegisterTransactionDto } from '../infrastructure/dtos/register-transaction.dto'
-import { GetTransactionsQuery } from './queries/get-transactions.query-handler'
-import { GetTransactionQuery } from './queries/get-transaction.query-handler'
 import { Paginated } from 'shared/infrastruture/decorators/paginated.decorator'
+import {
+  GetTransactionsQuery,
+  GetTransactionQuery,
+} from 'transaction/application/queries'
+import {
+  RegisterTransactionCommand,
+  RemoveTransactionCommand,
+} from 'transaction/application/commands'
 
 @Controller('transactions')
 export class GetTransactionController {

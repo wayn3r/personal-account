@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
-import { PaginationQuery } from 'shared/infrastruture/dtos/pagination-query'
+import { PaginatedQuery } from 'shared/infrastruture/dtos/pagination-query'
 import { Transaction } from '../domain/transaction'
 import { RegisterTransactionDto } from '../infrastructure/dtos/register-transaction.dto'
 import { Paginated } from 'shared/infrastruture/decorators/paginated.decorator'
@@ -14,7 +14,7 @@ import {
 } from 'transaction/application/commands'
 
 @Controller('transactions')
-export class GetTransactionController {
+export class TransactionController {
   constructor(
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
@@ -24,7 +24,7 @@ export class GetTransactionController {
   public async findAll(
     @Paginated()
     @Query()
-    query: PaginationQuery,
+    query: PaginatedQuery,
   ): Promise<Transaction[]> {
     const result = await this.queryBus.execute<GetTransactionsQuery, Transaction[]>(
       new GetTransactionsQuery(query),

@@ -1,6 +1,7 @@
 import { IsEnum, IsNumber, Min } from 'class-validator'
+import { GetItemsPaginatedQuery } from 'shared/domain/get-items-paginated-query'
 
-export class PaginationQuery {
+export class PaginatedQuery implements GetItemsPaginatedQuery {
   @IsNumber({ maxDecimalPlaces: 0 }, { message: 'Page must be a number' })
   @Min(1, { message: 'Page must be greater than 0' })
   page = 1

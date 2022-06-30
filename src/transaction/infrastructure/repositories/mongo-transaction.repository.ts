@@ -2,13 +2,14 @@ import { NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { InjectionConfig } from 'injection-config'
 import { Model, QueryOptions, Types } from 'mongoose'
-import { PaginationQuery } from 'shared/infrastruture/dtos/pagination-query'
-import { RegisterTransactionDto } from 'transaction/infrastructure/dtos/register-transaction.dto'
 import { Transaction } from 'transaction/domain/transaction'
 import { TransactionRepository } from 'transaction/domain/transaction-repository'
 import { TransactionMapper } from '../mappers/transaction.mapper'
 import { TransactionDocument } from '../schemas/transaction.schema'
 import { PaginatedDto } from 'shared/infrastruture/dtos/paginated-dto'
+import { GetItemsPaginatedQuery } from 'shared/domain/get-items-paginated-query'
+import { PaginatedResponse } from 'shared/domain/paginated-response'
+import { RegisterTransaction } from 'transaction/domain/register-transaction'
 
 export class MongoTransactionRepository implements TransactionRepository {
   constructor(
@@ -17,7 +18,9 @@ export class MongoTransactionRepository implements TransactionRepository {
     private readonly transactionMapper: TransactionMapper,
   ) {}
 
-  public async findAll(query: PaginationQuery): Promise<PaginatedDto<Transaction>> {
+  public async findAll(
+    query: GetItemsPaginatedQuery,
+  ): Promise<PaginatedResponse<Transaction>> {
     const { limit, page, order } = query
     const onlyActive = { active: true }
     const pagination: QueryOptions = {
@@ -35,7 +38,7 @@ export class MongoTransactionRepository implements TransactionRepository {
     })
   }
 
-  public async register(transaction: RegisterTransactionDto): Promise<void> {
+  public async register(transaction: RegisterTransaction): Promise<void> {
     await this.transactionModel.create(transaction)
   }
 

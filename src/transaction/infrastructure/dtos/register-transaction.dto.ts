@@ -1,7 +1,7 @@
 import {
+  ArrayMinSize,
   IsArray,
   IsBoolean,
-  IsDate,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -9,15 +9,19 @@ import {
   Length,
   MinLength,
 } from 'class-validator'
+import { RegisterTransaction } from 'transaction/domain/register-transaction'
 
-export class RegisterTransactionDto {
+export class RegisterTransactionDto implements RegisterTransaction {
   @IsNotEmpty({ message: 'Transaction must have a name' })
   @IsString({ message: 'Transaction name must be a string' })
   @MinLength(3, { message: 'Transaction name must be at least 3 characters' })
   name: string
 
   @IsNotEmpty({ message: 'Transaction must have an amount' })
-  @IsNumber({ maxDecimalPlaces: 2 }, { message: 'Transaction amount must be a number' })
+  @IsNumber(
+    { maxDecimalPlaces: 2 },
+    { message: 'Transaction amount must be a valid number' },
+  )
   amount: number
 
   @IsNotEmpty({ message: 'Transaction must have a currency' })
@@ -25,7 +29,7 @@ export class RegisterTransactionDto {
   @Length(3, 3, { message: 'Transaction currency must be 3 characters' })
   currency: string
 
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Transaction must have a type' })
   @IsString({ message: 'Transaction type must be a string' })
   type: string
 
@@ -42,10 +46,13 @@ export class RegisterTransactionDto {
   description?: string
 
   @IsOptional()
-  @IsDate({ message: 'Transaction date must be a string' })
-  date?: Date
+  @IsNumber({ maxDecimalPlaces: 0 }, { message: 'Transaction date must be a timestamp' })
+  date?: number
 
   @IsOptional()
-  @IsArray({ message: 'Transaction tags must be an array of string', each: true })
+  @IsArray({ message: 'Transaction tags must be an array' })
+  @IsNotEmpty({ message: 'A transaction tag must not be an empty string', each: true })
+  @IsString({ message: 'Each transaction tag must be a string', each: true })
+  @ArrayMinSize(1, { message: 'Transaction tags must have at least 1 tag' })
   tags?: string[]
 }

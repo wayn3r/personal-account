@@ -1,7 +1,8 @@
+import { Result } from 'shared/domain/result'
 import { Tag } from './tag'
 
 export interface TagRepository {
-  createOne(name: string): Promise<void>
-  removeTag(id: string): Promise<void>
-  findAll(): Promise<Tag[]>
+  createOne(name: string): Promise<Result>
+  removeTag(id: string): Promise<Result>
+  findAll(): Promise<Result<Tag[]>>
 }

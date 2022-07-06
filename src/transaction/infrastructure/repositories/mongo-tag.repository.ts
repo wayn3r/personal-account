@@ -1,9 +1,10 @@
-import { NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { InjectionConfig } from 'injection-config'
-import { Model } from 'mongoose'
+import { Error as MongooseError, Model, Types } from 'mongoose'
+import { Result } from 'shared/domain/result'
 import { Tag } from 'transaction/domain/tag'
 import { TagRepository } from 'transaction/domain/tag.repository'
+import { TransactionError } from 'transaction/domain/transaction-error'
 import { TagMapper } from '../mappers/tag.mapper'
 import { TagDocument } from '../schemas/tag.schema'
 
@@ -13,20 +14,35 @@ export class MongoTagRepository implements TagRepository {
     private readonly tagModel: Model<TagDocument>,
     private readonly tagMapper: TagMapper,
   ) {}
-  public async createOne(name: string): Promise<void> {
-    await this.tagModel.create({ name, active: true })
-  }
+  public async createOne(name: string): Promise<Result> {
+    try {
+      await this.tagModel.create({ name, active: true })
+      return Result.ok()
+    } catch (error) {
+      if (error.constructor instanceof MongooseError.ValidationError) {
+        return Result.fail(new Error(TransactionError.INVALID_TAG))
+      }
+      if (error.code === 11000) {
+        return Result.fail(new Error(TransactionError.TAG_ALREADY_EXISTS))
+      }
 
-  public async removeTag(id: string): Promise<void> {
-    const tag = await this.tagModel.findByIdAndUpdate(id, { active: false })
-    if (!tag) {
-      throw new NotFoundException('Tag not found')
+      throw error
     }
   }
 
-  public async findAll(): Promise<Tag[]> {
-    const tags = await this.tagModel.find({ active: true })
+  public async removeTag(id: string): Promise<Result> {
+    const tag = await this.tagModel.findOneAndUpdate(
+      { _id: new Types.ObjectId(id), active: true },
+      { active: false },
+    )
+    if (!tag) {
+      return Result.fail(new Error(TransactionError.TAG_NOT_FOUND))
+    }
+    return Result.ok()
+  }
 
-    return this.tagMapper.mapList(tags)
+  public async findAll(): Promise<Result<Tag[]>> {
+    const tags = await this.tagModel.find({ active: true })
+    return Result.ok(this.tagMapper.mapList(tags))
   }
 }

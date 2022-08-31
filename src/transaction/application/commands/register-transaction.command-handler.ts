@@ -1,8 +1,7 @@
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs'
-import { InjectionConfig } from 'injection-config'
+import { TransactionRepository, TransactionRepositoryProvider } from 'transaction/domain'
 import { RegisterTransaction } from 'transaction/domain/register-transaction'
-import { TransactionRepository } from 'transaction/domain/transaction.repository'
 
 export class RegisterTransactionCommand implements ICommand {
   public constructor(public readonly transaction: RegisterTransaction) {}
@@ -13,7 +12,7 @@ export class RegisterTransactionCommandHandler
   implements ICommandHandler<RegisterTransactionCommand, void>
 {
   public constructor(
-    @Inject(InjectionConfig.TRANSACTION_REPOSITORY)
+    @Inject(TransactionRepositoryProvider)
     private readonly transactionRepository: TransactionRepository,
   ) {}
   public async execute(command: RegisterTransactionCommand): Promise<void> {

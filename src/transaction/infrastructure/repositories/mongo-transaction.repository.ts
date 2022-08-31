@@ -1,34 +1,33 @@
 import { InjectModel } from '@nestjs/mongoose'
-import { InjectionConfig } from 'injection-config'
 import { Error as MongoError, Model, QueryOptions, Types } from 'mongoose'
-import { Transaction } from 'transaction/domain/transaction'
-import { TransactionRepository } from 'transaction/domain/transaction.repository'
-import { TransactionMapper } from '../mappers/transaction.mapper'
-import { TransactionDocument } from '../schemas/transaction.schema'
-import { PaginatedDto } from 'shared/infrastruture/dtos/paginated-dto'
-import { GetItemsPaginatedQuery } from 'shared/domain/get-items-paginated-query'
-import { PaginatedResponse } from 'shared/domain/paginated-response'
+import { DomainError, Result } from 'shared/domain'
+import { PaginatedResponse, PaginationQuery } from 'shared/infrastruture'
+import {
+  Tag,
+  Transaction,
+  TransactionError,
+  TransactionRepository,
+} from 'transaction/domain'
 import { RegisterTransaction } from 'transaction/domain/register-transaction'
-import { Tag } from 'transaction/domain/tag'
-import { Result } from 'shared/domain/result'
-import { TransactionError } from 'transaction/domain/transaction-error'
+import { TransactionMapper } from '../mappers'
+import { TransactionDocument } from '../schemas'
 
 export class MongoTransactionRepository implements TransactionRepository {
   constructor(
-    @InjectModel(InjectionConfig.TRANSACTION_MODEL)
+    @InjectModel(Transaction.name)
     private readonly transactionModel: Model<TransactionDocument>,
     private readonly transactionMapper: TransactionMapper,
   ) {}
 
   public async findAll(
-    query: GetItemsPaginatedQuery,
+    query: PaginationQuery,
   ): Promise<Result<PaginatedResponse<Transaction>>> {
-    const { limit, page, order } = query
+    const { limit, page } = query
     const onlyActive = { active: true }
     const pagination: QueryOptions = {
       limit,
       skip: (page - 1) * limit,
-      sort: { date: order },
+      sort: { date: -1 },
     }
 
     const transactions = await this.transactionModel
@@ -40,8 +39,8 @@ export class MongoTransactionRepository implements TransactionRepository {
       })
 
     return Result.ok(
-      new PaginatedDto<Transaction>({
-        content: this.transactionMapper.mapList(transactions),
+      new PaginatedResponse<Transaction>({
+        data: this.transactionMapper.mapList(transactions),
         total: await this.transactionModel.countDocuments(onlyActive),
         pagination: query,
       }),
@@ -54,7 +53,7 @@ export class MongoTransactionRepository implements TransactionRepository {
       return Result.ok()
     } catch (error) {
       if (error.constructor instanceof MongoError.ValidationError) {
-        return Result.fail(new Error(TransactionError.INVALID_TRANSACTION))
+        return Result.fail(DomainError.of(TransactionError.INVALID_TRANSACTION))
       }
       throw error
     }
@@ -66,7 +65,7 @@ export class MongoTransactionRepository implements TransactionRepository {
       { active: false },
     )
     if (!transaction) {
-      return Result.fail(new Error(TransactionError.TRANSACTION_NOT_FOUND))
+      return Result.fail(DomainError.of(TransactionError.TRANSACTION_NOT_FOUND))
     }
     return Result.ok()
   }
@@ -75,7 +74,7 @@ export class MongoTransactionRepository implements TransactionRepository {
     const transaction = await this.transactionModel.findById(new Types.ObjectId(id))
 
     if (!transaction) {
-      return Result.fail(new Error(TransactionError.TRANSACTION_NOT_FOUND))
+      return Result.fail(DomainError.of(TransactionError.TRANSACTION_NOT_FOUND))
     }
 
     return Result.ok(this.transactionMapper.map(transaction))

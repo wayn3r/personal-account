@@ -2,10 +2,10 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { GetTags } from 'transaction/application/queries'
 import { CreateTagCommand, RemoveTagCommand } from 'transaction/application/commands'
-import { Tag } from 'transaction/domain/tag'
+import { Tag } from 'transaction/domain/entities/tag.entity'
 import { Result } from 'shared/domain/result'
-import { ErrorResponse } from 'shared/domain/error-response'
-import { TransactionError } from 'transaction/domain/transaction-error'
+import { ErrorResponse } from 'shared/infrastruture/dtos/error-response'
+import { TransactionError } from 'transaction/domain/errors/transaction-error'
 
 @Controller('tags')
 export class TagController {
@@ -17,22 +17,22 @@ export class TagController {
   @Get()
   public async findAll(): Promise<ErrorResponse | Tag[]> {
     const result = await this.queryBus.execute<GetTags, Result<Tag[]>>(new GetTags())
-    if (result.isFailure) {
+    if (result.isFailure()) {
       return this.handleError(result.getError())
     }
-    return result.getValue()
+    return result.getOrThrow()
   }
 
   @Post('create')
   public async create(@Body() body: { name: string }): Promise<ErrorResponse | void> {
     const commandResult = CreateTagCommand.create(body.name)
-    if (commandResult.isFailure) {
+    if (commandResult.isFailure()) {
       return this.handleError(commandResult.getError())
     }
     const result = await this.commandBus.execute<CreateTagCommand, Result>(
-      commandResult.getValue(),
+      commandResult.getOrThrow(),
     )
-    if (result.isFailure) {
+    if (result.isFailure()) {
       return this.handleError(result.getError())
     }
   }
@@ -42,7 +42,7 @@ export class TagController {
     const result = await this.commandBus.execute<RemoveTagCommand, Result>(
       new RemoveTagCommand(id),
     )
-    if (result.isFailure) {
+    if (result.isFailure()) {
       return this.handleError(result.getError())
     }
   }
@@ -64,7 +64,7 @@ export class TagController {
       },
     }
 
-    const errorCode = error.message
+    const errorCode = error.message as keyof typeof HANDLED_ERRORS
     const handledError = HANDLED_ERRORS[errorCode]
     if (!handledError) {
       throw error

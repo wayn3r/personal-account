@@ -1,38 +1,46 @@
-export class Result<Success = void> {
-  private constructor(
-    public readonly isSuccess: boolean,
-    private readonly value: Error | Success,
+import { DomainError } from './domain-error'
+
+export class Result<T = void> {
+  protected constructor(
+    private readonly value: T,
+    private readonly error?: DomainError,
   ) {}
 
-  public get isFailure() {
-    return !this.isSuccess
+  public isFailure(): this is Failure {
+    return this.value instanceof Error
   }
 
-  public getError(): Error {
-    if (this.isSuccess) {
+  public getError(): DomainError {
+    if (!this.isFailure()) {
       throw new Error('Result is success')
     }
-    return this.value as Error
+
+    return this.error as DomainError
   }
 
-  public getValue(): Success {
-    if (this.isFailure) {
-      throw new Error('Result is failure')
-    }
-    return this.value as Success
-  }
-
-  public getOrThrow(): Success {
-    if (this.isFailure) {
+  public getOrThrow(): T {
+    if (this.isFailure()) {
       throw this.getError()
     }
-    return this.value as Success
+    return this.value
   }
 
-  public static ok<Success>(value?: Success): Result<Success> {
-    return new this<Success>(true, value)
+  public static ok<T = void>(value?: T): Success<T> {
+    return new Success<T>(value as T)
   }
-  public static fail(value: Error): Result<never> {
-    return new this<never>(false, value)
+  public static fail(error: DomainError): Failure {
+    return new Failure(error)
+  }
+}
+
+export class Failure extends Result<never> {
+  public constructor(error: DomainError) {
+    super(undefined as never, error)
+  }
+}
+
+export class Success<T> extends Result<T> {
+  public constructor(value: T) {
+    super(value)
   }
 }

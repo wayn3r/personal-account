@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
-import { OPTIONS } from 'shared/infrastruture/schemas/schema-config'
+import { COLLECTION_NAMES } from 'shared/infrastruture/config'
 
-@Schema({ ...OPTIONS })
-class TagDocument extends Document {
+@Schema({ collection: COLLECTION_NAMES.TAG, versionKey: false })
+export class TagDocument extends Document {
   @Prop({ required: true, type: String, unique: true })
   name: string
 
@@ -11,6 +11,4 @@ class TagDocument extends Document {
   active: boolean
 }
 
-const TagSchema = SchemaFactory.createForClass(TagDocument)
-
-export { TagDocument, TagSchema }
+export const TagSchema = SchemaFactory.createForClass(TagDocument)

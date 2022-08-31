@@ -1,6 +1,6 @@
-import { Mapper } from 'shared/domain/mapper'
-import { Tag } from 'transaction/domain/tag'
-import { TagDocument } from '../schemas/tag.schema'
+import { Mapper } from 'shared/infrastruture'
+import { Tag } from 'transaction/domain'
+import { TagDocument } from '../schemas'
 
 export class TagMapper extends Mapper<TagDocument, Tag> {
   public map(from: TagDocument): Tag {

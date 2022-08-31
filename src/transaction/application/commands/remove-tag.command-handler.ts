@@ -1,7 +1,6 @@
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs'
-import { InjectionConfig } from 'injection-config'
-import { TagRepository } from 'transaction/domain/tag.repository'
+import { TagRepository, TagRepositoryProvider } from 'transaction/domain'
 
 export class RemoveTagCommand implements ICommand {
   constructor(public readonly id: string) {}
@@ -10,7 +9,7 @@ export class RemoveTagCommand implements ICommand {
 @CommandHandler(RemoveTagCommand)
 export class RemoveTagCommandHandler implements ICommandHandler<RemoveTagCommand, void> {
   constructor(
-    @Inject(InjectionConfig.TAG_REPOSITORY)
+    @Inject(TagRepositoryProvider)
     private readonly tagRepository: TagRepository,
   ) {}
 

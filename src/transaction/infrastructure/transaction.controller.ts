@@ -1,10 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
-import { PaginatedQuery } from 'shared/infrastruture/dtos/pagination-query'
-import { Transaction } from '../domain/transaction'
-import { RegisterTransactionDto } from '../infrastructure/dtos/register-transaction.dto'
-import { Paginated } from 'shared/infrastruture/decorators/paginated.decorator'
-import { TransactionError } from 'transaction/domain/transaction-error'
 import {
   GetTransactionsQuery,
   GetTransactionQuery,
@@ -14,7 +9,10 @@ import {
   RemoveTransactionCommand,
 } from 'transaction/application/commands'
 import { Result } from 'shared/domain/result'
-import { ErrorResponse } from 'shared/domain/error-response'
+import { ErrorResponse } from 'shared/infrastruture/dtos/error-response'
+import { PaginationQuery } from 'shared/infrastruture/dtos'
+import { Transaction, TransactionError } from 'transaction/domain'
+import { RegisterTransactionDto } from './dtos'
 
 @Controller('transactions')
 export class TransactionController {
@@ -25,16 +23,15 @@ export class TransactionController {
 
   @Get()
   public async findAll(
-    @Paginated()
     @Query()
-    query: PaginatedQuery,
+    query: PaginationQuery,
   ): Promise<ErrorResponse | Transaction[]> {
     const result = await this.queryBus.execute<
       GetTransactionsQuery,
       Result<Transaction[]>
     >(new GetTransactionsQuery(query))
 
-    if (result.isFailure) {
+    if (result.isFailure()) {
       return this.handleError(result.getError())
     }
 
@@ -47,7 +44,7 @@ export class TransactionController {
       new GetTransactionQuery(id),
     )
 
-    if (result.isFailure) {
+    if (result.isFailure()) {
       return this.handleError(result.getError())
     }
 
@@ -62,7 +59,7 @@ export class TransactionController {
       new RegisterTransactionCommand(transaction),
     )
 
-    if (result.isFailure) {
+    if (result.isFailure()) {
       return this.handleError(result.getError())
     }
 
@@ -75,7 +72,7 @@ export class TransactionController {
       new RemoveTransactionCommand(id),
     )
 
-    if (result.isFailure) {
+    if (result.isFailure()) {
       return this.handleError(result.getError())
     }
 
@@ -99,7 +96,7 @@ export class TransactionController {
       },
     }
 
-    const errorCode = error.message
+    const errorCode = error.message as keyof typeof HANDLED_ERRORS
     const handledError = HANDLED_ERRORS[errorCode]
     if (!handledError) {
       throw error

@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { InjectionConfig } from 'injection-config'
 import { Document, Types } from 'mongoose'
-import { OPTIONS } from 'shared/infrastruture/schemas/schema-config'
+import { COLLECTION_NAMES } from 'shared/infrastruture/config'
+import { Tag } from 'transaction/domain'
 
-@Schema({ ...OPTIONS })
-class TransactionDocument extends Document {
+@Schema({ collection: COLLECTION_NAMES.TRANSACTION, versionKey: false })
+export class TransactionDocument extends Document {
   @Prop({ required: true, type: String })
   name: string
 
@@ -31,7 +31,7 @@ class TransactionDocument extends Document {
 
   @Prop({
     required: true,
-    type: [{ type: Types.ObjectId, ref: InjectionConfig.TAG_MODEL }],
+    type: [{ type: Types.ObjectId, ref: Tag.name }],
     default: [],
   })
   tags: string[]
@@ -40,6 +40,4 @@ class TransactionDocument extends Document {
   active: boolean
 }
 
-const TransactionSchema = SchemaFactory.createForClass(TransactionDocument)
-
-export { TransactionDocument, TransactionSchema }
+export const TransactionSchema = SchemaFactory.createForClass(TransactionDocument)

@@ -1,5 +1,5 @@
-import { Mapper } from 'shared/domain/mapper'
-import { Transaction } from 'transaction/domain/transaction'
+import { Mapper } from 'shared/infrastruture/mappers/mapper'
+import { Transaction } from 'transaction/domain/entities/transaction.entity'
 import { TransactionDocument } from '../schemas/transaction.schema'
 
 export class TransactionMapper extends Mapper<TransactionDocument, Transaction> {

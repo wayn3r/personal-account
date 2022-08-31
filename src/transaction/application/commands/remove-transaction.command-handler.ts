@@ -1,7 +1,6 @@
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs'
-import { InjectionConfig } from 'injection-config'
-import { TransactionRepository } from 'transaction/domain/transaction.repository'
+import { TransactionRepository, TransactionRepositoryProvider } from 'transaction/domain'
 
 export class RemoveTransactionCommand implements ICommand {
   constructor(public readonly id: string) {}
@@ -12,7 +11,7 @@ export class RemoveTransactionCommandHandler
   implements ICommandHandler<RemoveTransactionCommand, void>
 {
   constructor(
-    @Inject(InjectionConfig.TRANSACTION_REPOSITORY)
+    @Inject(TransactionRepositoryProvider)
     private readonly transactionRepository: TransactionRepository,
   ) {}
 

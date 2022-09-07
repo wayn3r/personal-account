@@ -30,18 +30,22 @@ export class MongoTransactionRepository implements TransactionRepository {
       sort: { date: -1 },
     }
 
-    const transactions = await this.transactionModel
-      .find(onlyActive, null, pagination)
-      .populate({
-        path: 'tags',
-        select: 'name',
-        transform: (tag: Tag) => tag.name,
-      })
+    const [total, transactions] = await Promise.all([
+      this.transactionModel.countDocuments(onlyActive).exec(),
+      this.transactionModel
+        .find(onlyActive, null, pagination)
+        .populate({
+          path: 'tags',
+          select: 'name',
+          transform: (tag: Tag) => tag.name,
+        })
+        .exec(),
+    ])
 
     return Result.ok(
       new PaginatedResponse<Transaction>({
         data: this.transactionMapper.mapList(transactions),
-        total: await this.transactionModel.countDocuments(onlyActive),
+        total,
         pagination: query,
       }),
     )

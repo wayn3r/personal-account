@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
-import { GetTags } from 'transaction/application/queries'
+import { GetTags } from 'transaction/infrastructure/queries'
 import { CreateTagCommand, RemoveTagCommand } from 'transaction/application/commands'
 import { Tag } from 'transaction/domain/entities/tag.entity'
 import { Result } from 'shared/domain/result'

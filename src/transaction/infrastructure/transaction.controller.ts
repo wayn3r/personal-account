@@ -3,7 +3,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import {
   GetTransactionsQuery,
   GetTransactionQuery,
-} from 'transaction/application/queries'
+} from 'transaction/infrastructure/queries'
 import {
   RegisterTransactionCommand,
   RemoveTransactionCommand,

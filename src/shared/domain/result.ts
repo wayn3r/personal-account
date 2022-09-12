@@ -37,6 +37,16 @@ export class Result<T = void> {
     return mapper(this.getOrThrow())
   }
 
+  public static combine(...results: Result<any>[]): Result<any[]> {
+    const values = []
+    for (const result of results) {
+      if (result.isFailure()) return result
+      values.push(result.getOrThrow())
+    }
+
+    return Result.ok(values)
+  }
+
   public validate(
     predicate: (value: T) => boolean,
     error: (value: T) => Failure,

@@ -1,2 +1,5 @@
 export * from './result'
 export * from './domain-error'
+export * from './id'
+export * from './optional'
+export * from './failures'

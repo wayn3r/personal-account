@@ -51,16 +51,12 @@ export class MongoTransactionRepository implements TransactionRepository {
     )
   }
 
-  public async register(transaction: RegisterTransaction): Promise<Result> {
-    try {
-      await this.transactionModel.create(transaction)
-      return Result.ok()
-    } catch (error) {
-      if (error.constructor instanceof MongoError.ValidationError) {
-        return Result.fail(DomainError.of(TransactionError.INVALID_TRANSACTION))
-      }
-      throw error
-    }
+  public async register(transaction: Transaction): Promise<Result> {
+    const document = this.transactionMapper.toDocument(transaction)
+    return this.transactionModel
+      .create(document)
+      .then(() => Result.ok())
+      .catch((error) => Result.fail(error))
   }
 
   public async remove(id: string): Promise<Result> {

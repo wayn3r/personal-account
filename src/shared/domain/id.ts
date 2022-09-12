@@ -32,12 +32,16 @@ export class Id {
     return isString && /^[0-9a-fA-F]{24}$/.test(id)
   }
 
-  static generate() {
+  static generate(): Id {
     const timestamp = ((new Date().getTime() / 1000) | 0).toString(16)
     const sufix = 'xxxxxxxxxxxxxxxx'
       .replace(/[x]/g, () => ((Math.random() * 16) | 0).toString(16))
       .toLowerCase()
 
-    return timestamp + sufix
+    return new Id(timestamp + sufix)
+  }
+
+  static load(value: string): Id {
+    return new Id(value)
   }
 }

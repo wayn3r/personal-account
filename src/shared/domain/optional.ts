@@ -74,4 +74,21 @@ export class Optional<T> {
 
     return Result.ok(this.getOrThrow())
   }
+
+  public validate(
+    predicate: (value: T) => boolean,
+    error: (value?: T) => Failure,
+  ): Result<T> {
+    if (this.isAbsent()) {
+      return error()
+    }
+
+    return predicate(this.getOrThrow())
+      ? Result.ok(this.getOrThrow())
+      : error(this.getOrThrow())
+  }
+
+  public replaceIfEmptyWith(value: T): Optional<T> {
+    return this.isPresent() ? this : Optional.of(value)
+  }
 }

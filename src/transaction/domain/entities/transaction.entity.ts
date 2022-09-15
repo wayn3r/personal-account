@@ -1,4 +1,18 @@
-import { BadRequest, DomainError, Id, Optional, Result } from 'shared/domain'
+import {
+  AggregateRoot,
+  BadRequest,
+  DomainError,
+  Id,
+  Optional,
+  Result,
+} from 'shared/domain'
+import {
+  TransactionNameEmpty,
+  TransactionNameInvalid,
+  TransactionNameTooLong,
+  TransactionNameTooShort,
+} from '../errors'
+import { TransactionRegistered } from '../events'
 
 type TransactionParams = {
   id: Id
@@ -8,7 +22,7 @@ type TransactionParams = {
   currency: string
   type: string
   account: string
-  tags: string[]
+  tags: Id[]
   status: string
   date: Date
   createdAt: Date
@@ -18,7 +32,7 @@ export enum TRANSACTION_STATUS {
   ACTIVE = 'active',
 }
 
-export class Transaction {
+export class Transaction extends AggregateRoot {
   public static readonly MIN_NAME_LENGTH = 3
   public static readonly MAX_NAME_LENGTH = 50
 
@@ -29,12 +43,13 @@ export class Transaction {
   public readonly currency: string
   public readonly type: string
   public readonly account: string
-  public readonly tags: string[]
+  public readonly tags: Id[]
   public readonly status: string
   public readonly date: Date
   public readonly createdAt: Date
 
   protected constructor(params: TransactionParams) {
+    super()
     this.id = params.id
     this.name = params.name
     this.description = params.description
@@ -55,30 +70,22 @@ export class Transaction {
     currency: Optional<string>
     type: Optional<string>
     account: Optional<string>
-    tags: Optional<string[]>
+    tags: Id[]
     date: Optional<Date>
   }): Result<Transaction> {
-    const nameResult = this.validateName(optionalParams.name)
-    const descriptionResult = this.validateDescription(optionalParams.description)
-    const amountResult = this.validateAmount(optionalParams.amount)
-    const currencyResult = this.validateCurrency(optionalParams.currency)
-    const typeResult = this.validateType(optionalParams.type)
-    const accountResult = this.validateAccount(optionalParams.account)
-    const tagsResult = this.validateTags(optionalParams.tags)
-    const dateResult = this.validateDate(optionalParams.date)
-
     return Result.combine(
-      nameResult,
-      descriptionResult,
-      amountResult,
-      currencyResult,
-      typeResult,
-      accountResult,
-      tagsResult,
-      dateResult,
-    ).map(
-      ([name, description, amount, currency, type, account, tags, date]) =>
-        new Transaction({
+      this.validateName(optionalParams.name),
+      this.validateDescription(optionalParams.description),
+      this.validateAmount(optionalParams.amount),
+      this.validateCurrency(optionalParams.currency),
+      this.validateType(optionalParams.type),
+      this.validateAccount(optionalParams.account),
+      this.validateTags(optionalParams.tags),
+      this.validateDate(optionalParams.date),
+    )
+      .map((values) => {
+        const [name, description, amount, currency, type, account, tags, date] = values
+        return new Transaction({
           id: Id.generate(),
           name,
           description,
@@ -90,29 +97,32 @@ export class Transaction {
           date,
           status: TRANSACTION_STATUS.ACTIVE,
           createdAt: new Date(),
-        }),
-    )
+        })
+      })
+      .onSuccess((transaction) => {
+        const event = new TransactionRegistered({
+          ...transaction,
+          id: transaction.id.toString(),
+        })
+        transaction.addEvent(event)
+      })
   }
 
   static validateName(nameOrNull: Optional<string>): Result<string> {
     return nameOrNull
-      .validateIsPresent(() => new BadRequest(DomainError.of('TRANSACTION_NAME_EMPTY')))
+      .validateIsPresent(() => new TransactionNameEmpty())
       .validate(
         (name) => typeof name === 'string',
-        (name) =>
-          new BadRequest(
-            DomainError.of('TRANSACTION_NAME_INVALID'),
-            `Invalid transaction name: ${name}`,
-          ),
+        (name) => new TransactionNameInvalid(name),
       )
       .map((name) => name.trim())
       .validate(
         (name) => name.length >= this.MIN_NAME_LENGTH,
-        () => new BadRequest(DomainError.of('TRANSACTION_NAME_TOO_SHORT')),
+        (name) => new TransactionNameTooShort(name),
       )
       .validate(
         (name) => name.length <= this.MAX_NAME_LENGTH,
-        () => new BadRequest(DomainError.of('TRANSACTION_NAME_TOO_LONG')),
+        (name) => new TransactionNameTooLong(name),
       )
   }
 
@@ -189,18 +199,13 @@ export class Transaction {
       .map((account) => account.trim())
   }
 
-  static validateTags(tagsOrNull: Optional<string[]>): Result<string[]> {
-    return tagsOrNull
-      .validateIsPresent(() => new BadRequest(DomainError.of('TRANSACTION_TAGS_EMPTY')))
-      .validate(
-        (tags) => Array.isArray(tags),
-        (tags) =>
-          new BadRequest(
-            DomainError.of('TRANSACTION_TAGS_INVALID'),
-            `Invalid transaction tags: ${tags}`,
-          ),
-      )
-      .map((tags) => tags.map((tag) => tag.trim()))
+  static validateTags(tags: Id[]): Result<Id[]> {
+    const noDuplicates = new Set(tags)
+    if (noDuplicates.size !== tags.length) {
+      return new BadRequest(DomainError.of('TRANSACTION_TAGS_DUPLICATED'))
+    }
+
+    return Result.ok(tags)
   }
 
   static validateDate(dateOrNull: Optional<Date>): Result<Date> {

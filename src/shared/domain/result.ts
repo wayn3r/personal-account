@@ -1,5 +1,9 @@
 import { DomainError } from './domain-error'
 
+type ArrayOfResultValues<T> = {
+  [P in keyof T]: T[P] extends Result<infer Type> ? Type : unknown
+}
+
 export class Result<T = void> {
   protected constructor(
     private readonly value: T,
@@ -37,14 +41,16 @@ export class Result<T = void> {
     return mapper(this.getOrThrow())
   }
 
-  public static combine(...results: Result<any>[]): Result<any[]> {
+  public static combine<T extends Result<any>[]>(
+    ...results: [...T]
+  ): Result<ArrayOfResultValues<T>> {
     const values = []
     for (const result of results) {
       if (result.isFailure()) return result
       values.push(result.getOrThrow())
     }
 
-    return Result.ok(values)
+    return Result.ok(values as ArrayOfResultValues<T>)
   }
 
   public validate(
@@ -54,6 +60,14 @@ export class Result<T = void> {
     if (this.isFailure()) return this
 
     return predicate(this.getOrThrow()) ? this : error(this.getOrThrow())
+  }
+
+  public onSuccess(callback: (value: T) => void): Result<T> {
+    if (!this.isFailure()) {
+      callback(this.getOrThrow())
+    }
+
+    return this
   }
 
   public static ok<T = void>(value?: T): Success<T> {

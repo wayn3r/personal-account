@@ -2,13 +2,13 @@ import { Optional } from './optional'
 import { Failure, Result } from './result'
 
 export class Id {
-  private constructor(public readonly value: string) {
+  private constructor(private readonly value: string) {
     if (!value) {
       throw new Error('Id cannot be empty')
     }
   }
 
-  fromNullable(
+  public static fromNullable(
     value: Optional<string>,
     emptyError: () => Failure,
     invalidError: (invalidValue: any) => Failure,

@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose'
-import { Error as MongoError, Model, QueryOptions, Types } from 'mongoose'
+import { Model, QueryOptions, Types } from 'mongoose'
 import { DomainError, Result } from 'shared/domain'
 import { PaginatedResponse, PaginationQuery } from 'shared/infrastruture'
 import {
@@ -8,7 +8,6 @@ import {
   TransactionError,
   TransactionRepository,
 } from 'transaction/domain'
-import { RegisterTransaction } from 'transaction/domain/register-transaction'
 import { TransactionMapper } from '../mappers'
 import { TransactionDocument } from '../schemas'
 

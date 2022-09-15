@@ -51,6 +51,10 @@ export class Optional<T> {
     return Optional.of(mapper(this.getOrThrow()))
   }
 
+  public toResult(): Result<T> {
+    return Result.ok(this.isPresent() ? this.getOrThrow() : undefined)
+  }
+
   public filter(predicate: (value: T) => boolean): Optional<T> {
     if (this.isAbsent()) {
       return Optional.empty<T>()

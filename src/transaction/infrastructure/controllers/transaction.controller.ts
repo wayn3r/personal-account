@@ -1,18 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common'
+import { Controller, Delete, Get, Param, Query } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import {
   GetTransactionsQuery,
   GetTransactionQuery,
 } from 'transaction/infrastructure/queries'
-import {
-  RegisterTransactionCommand,
-  RemoveTransactionCommand,
-} from 'transaction/application/commands'
+import { RemoveTransactionCommand } from 'transaction/application/commands'
 import { Result } from 'shared/domain/result'
 import { ErrorResponse } from 'shared/infrastruture/dtos/error-response'
 import { PaginationQuery } from 'shared/infrastruture/dtos'
 import { Transaction, TransactionError } from 'transaction/domain'
-import { RegisterTransactionDto } from './dtos'
 
 @Controller('transactions')
 export class TransactionController {
@@ -42,21 +38,6 @@ export class TransactionController {
   public async findOne(@Param() id: string): Promise<ErrorResponse | Transaction> {
     const result = await this.queryBus.execute<GetTransactionQuery, Result<Transaction>>(
       new GetTransactionQuery(id),
-    )
-
-    if (result.isFailure()) {
-      return this.handleError(result.getError())
-    }
-
-    return result.getOrThrow()
-  }
-
-  @Post('register')
-  public async register(
-    @Body() transaction: RegisterTransactionDto,
-  ): Promise<ErrorResponse | void> {
-    const result = await this.commandBus.execute<RegisterTransactionCommand, Result>(
-      new RegisterTransactionCommand(transaction),
     )
 
     if (result.isFailure()) {

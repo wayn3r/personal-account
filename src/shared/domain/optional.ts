@@ -71,6 +71,14 @@ export class Optional<T> {
     return mapper(this.getOrThrow())
   }
 
+  public getFromObject<U extends keyof T>(key: U): Optional<T[U]> {
+    if (this.isAbsent()) {
+      return Optional.empty<T[U]>()
+    }
+
+    return Optional.of(this.getOrThrow()[key])
+  }
+
   public validateIsPresent(error: () => Failure): Result<T> {
     if (this.isAbsent()) {
       return error()

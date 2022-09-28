@@ -24,7 +24,7 @@ export class GetTransactionQueryHandler
     const { id } = query
     const result = await this.transactionRepository.findOne(id)
     if (result.isFailure()) {
-      return Result.fail(result.getError())
+      return Result.fail(result.getErrorOrThrow())
     }
     return Result.ok(result.getOrThrow())
   }

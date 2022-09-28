@@ -11,10 +11,10 @@ export class Result<T = void> {
   ) {}
 
   public isFailure(): this is Failure {
-    return this.value instanceof Error
+    return this.error !== undefined && this.error !== null
   }
 
-  public getError(): DomainError {
+  public getErrorOrThrow(): DomainError {
     if (!this.isFailure()) {
       throw new Error('Result is success')
     }
@@ -24,7 +24,7 @@ export class Result<T = void> {
 
   public getOrThrow(): T {
     if (this.isFailure()) {
-      throw this.getError()
+      throw this.getErrorOrThrow()
     }
     return this.value
   }

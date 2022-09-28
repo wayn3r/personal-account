@@ -18,7 +18,7 @@ export class TagController {
   public async findAll(): Promise<ErrorResponse | Tag[]> {
     const result = await this.queryBus.execute<GetTags, Result<Tag[]>>(new GetTags())
     if (result.isFailure()) {
-      return this.handleError(result.getError())
+      return this.handleError(result.getErrorOrThrow())
     }
     return result.getOrThrow()
   }
@@ -27,13 +27,13 @@ export class TagController {
   public async create(@Body() body: { name: string }): Promise<ErrorResponse | void> {
     const commandResult = CreateTagCommand.create(body.name)
     if (commandResult.isFailure()) {
-      return this.handleError(commandResult.getError())
+      return this.handleError(commandResult.getErrorOrThrow())
     }
     const result = await this.commandBus.execute<CreateTagCommand, Result>(
       commandResult.getOrThrow(),
     )
     if (result.isFailure()) {
-      return this.handleError(result.getError())
+      return this.handleError(result.getErrorOrThrow())
     }
   }
 
@@ -43,7 +43,7 @@ export class TagController {
       new RemoveTagCommand(id),
     )
     if (result.isFailure()) {
-      return this.handleError(result.getError())
+      return this.handleError(result.getErrorOrThrow())
     }
   }
 

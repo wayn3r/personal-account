@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common'
+import { Body, Controller, Post, Res } from '@nestjs/common'
+import { Response } from 'express'
 import { Optional, Result } from 'shared/domain'
 import { ErrorResponse, HttpController } from 'shared/infrastruture'
 import { RegisterTransactionCommand } from 'transaction/application'
@@ -8,8 +9,10 @@ export class RegisterTransactionController extends HttpController {
   @Post('register')
   public async register(
     @Body() body: Record<string, any>,
-  ): Promise<ErrorResponse | void> {
+    @Res() res: Response,
+  ): Promise<Response<ErrorResponse | void>> {
     const optionalBody = Optional.of(body)
+
     const commandResult = RegisterTransactionCommand.create({
       name: optionalBody.getFromObject('name'),
       description: optionalBody.getFromObject('description'),
@@ -20,15 +23,14 @@ export class RegisterTransactionController extends HttpController {
       date: optionalBody.getFromObject('date'),
       tags: optionalBody.getFromObject('tags'),
     })
+    if (commandResult.isFailure()) return this.handleError(res, commandResult)
 
-    if (commandResult.isFailure()) return this.handleError(commandResult)
     const result = await this.commandBus.execute<RegisterTransactionCommand, Result>(
       commandResult.getOrThrow(),
     )
-
-    if (result.isFailure()) return this.handleError(result)
+    if (result.isFailure()) return this.handleError(res, result)
 
     this.logger.log('Transaction registered successfully')
-    return this.noContent()
+    return this.noContent(res)
   }
 }

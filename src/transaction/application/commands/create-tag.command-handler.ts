@@ -37,7 +37,7 @@ export class CreateTagCommandHandler
   public async execute(command: CreateTagCommand): Promise<Result> {
     const result = await this.tagRepository.createOne(command.name)
     if (result.isFailure()) {
-      return Result.fail(result.getError())
+      return Result.fail(result.getErrorOrThrow())
     }
     return Result.ok()
   }

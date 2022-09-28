@@ -28,7 +28,7 @@ export class TransactionController {
     >(new GetTransactionsQuery(query))
 
     if (result.isFailure()) {
-      return this.handleError(result.getError())
+      return this.handleError(result.getErrorOrThrow())
     }
 
     return result.getOrThrow()
@@ -41,7 +41,7 @@ export class TransactionController {
     )
 
     if (result.isFailure()) {
-      return this.handleError(result.getError())
+      return this.handleError(result.getErrorOrThrow())
     }
 
     return result.getOrThrow()
@@ -54,7 +54,7 @@ export class TransactionController {
     )
 
     if (result.isFailure()) {
-      return this.handleError(result.getError())
+      return this.handleError(result.getErrorOrThrow())
     }
 
     return result.getOrThrow()

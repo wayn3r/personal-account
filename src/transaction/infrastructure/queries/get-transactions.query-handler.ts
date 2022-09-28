@@ -26,7 +26,7 @@ export class GetTransactionsQueryHandler
   ): Promise<Result<PaginatedResponse<Transaction>>> {
     const result = await this.transactionRepository.findAll(query.paginationQuery)
     if (result.isFailure()) {
-      return Result.fail(result.getError())
+      return Result.fail(result.getErrorOrThrow())
     }
     return Result.ok(result.getOrThrow())
   }

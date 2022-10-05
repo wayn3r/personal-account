@@ -1,79 +1,47 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
-import { CommandBus, QueryBus } from '@nestjs/cqrs'
-import { GetTags } from 'transaction/infrastructure/queries'
+import { Body, Controller, Delete, Param, Post } from '@nestjs/common'
 import { CreateTagCommand, RemoveTagCommand } from 'transaction/application/commands'
-import { Tag } from 'transaction/domain/entities/tag.entity'
 import { Result } from 'shared/domain/result'
-import { ErrorResponse } from 'shared/infrastruture/dtos/error-response'
-import { TransactionError } from 'transaction/domain/errors/transaction-error'
+import { Optional } from '@/shared/domain'
+import { HttpController } from '@/shared/infrastruture'
+import { Response } from 'express'
+import { Res } from '@nestjs/common/decorators'
 
 @Controller('tags')
-export class TagController {
-  constructor(
-    private readonly queryBus: QueryBus,
-    private readonly commandBus: CommandBus,
-  ) {}
-
-  @Get()
-  public async findAll(): Promise<ErrorResponse | Tag[]> {
-    const result = await this.queryBus.execute<GetTags, Result<Tag[]>>(new GetTags())
-    if (result.isFailure()) {
-      return this.handleError(result.getErrorOrThrow())
-    }
-    return result.getOrThrow()
-  }
+export class TagController extends HttpController {
+  // @Get()
+  // public async findAll(): Promise<ErrorResponse | Tag[]> {
+  //   const result = await this.queryBus.execute<GetTags, Result<Tag[]>>(new GetTags())
+  //   if (result.isFailure()) {
+  //     return this.handleError(result.getErrorOrThrow())
+  //   }
+  //   return result.getOrThrow()
+  // }
 
   @Post('create')
-  public async create(@Body() body: { name: string }): Promise<ErrorResponse | void> {
-    const commandResult = CreateTagCommand.create(body.name)
-    if (commandResult.isFailure()) {
-      return this.handleError(commandResult.getErrorOrThrow())
-    }
-    const result = await this.commandBus.execute<CreateTagCommand, Result>(
-      commandResult.getOrThrow(),
-    )
-    if (result.isFailure()) {
-      return this.handleError(result.getErrorOrThrow())
-    }
+  public async create(
+    @Res() res: Response,
+    @Body() body: { name: string },
+  ): Promise<Response> {
+    const optionalBody = Optional.of(body)
+    const commandResult = CreateTagCommand.create(optionalBody.getFromObject('name'))
+    if (commandResult.isFailure()) return this.handleError(res, commandResult)
+
+    const command = commandResult.getOrThrow()
+    const result = await this.commandBus.execute<CreateTagCommand, Result>(command)
+    if (result.isFailure()) return this.handleError(res, result)
+
+    return this.noContent(res)
   }
 
   @Delete('remove/:id')
-  public async remove(@Param() id: string): Promise<ErrorResponse | void> {
-    const result = await this.commandBus.execute<RemoveTagCommand, Result>(
-      new RemoveTagCommand(id),
-    )
-    if (result.isFailure()) {
-      return this.handleError(result.getErrorOrThrow())
-    }
-  }
+  public async remove(@Res() res: Response, @Param() id: string): Promise<Response> {
+    const commandResult = RemoveTagCommand.create(Optional.of(id))
+    if (commandResult.isFailure()) return this.handleError(res, commandResult)
 
-  private handleError(error: Error): ErrorResponse {
-    const HANDLED_ERRORS = {
-      [TransactionError.TAG_NOT_FOUND]: {
-        message: 'Tag not found',
-        status: 404,
-      },
-      [TransactionError.TAG_ALREADY_EXISTS]: {
-        message: 'Tag already exists',
-        status: 409,
-      },
+    const command = commandResult.getOrThrow()
+    const result = await this.commandBus.execute<RemoveTagCommand, Result>(command)
+    if (result.isFailure()) return this.handleError(res, result)
 
-      [TransactionError.INVALID_TAG]: {
-        message: 'Invalid tag',
-        status: 400,
-      },
-    }
-
-    const errorCode = error.message as keyof typeof HANDLED_ERRORS
-    const handledError = HANDLED_ERRORS[errorCode]
-    if (!handledError) {
-      throw error
-    }
-
-    return {
-      code: errorCode,
-      message: handledError.message as string,
-      status: HANDLED_ERRORS[errorCode].status as number,
-    }
+    return this.noContent(res)
   }
 }

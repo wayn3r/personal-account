@@ -39,7 +39,7 @@ export class TransactionMapper extends Mapper<MongoDocument, Transaction> {
     document.currency = from.currency
     document.type = from.type
     document.account = from.account
-    document.tags = from.tags.map((tag) => new Types.ObjectId(tag.toString()))
+    document.tags = from.tags.map((tagId) => new Types.ObjectId(tagId.toString()))
     document.status = from.status
     document.date = from.date
     document.createdAt = from.createdAt

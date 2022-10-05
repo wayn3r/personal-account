@@ -1,9 +1,23 @@
+import { Id, Optional, Result } from '@/shared/domain'
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs'
-import { TagRepository, TagRepositoryProvider } from 'transaction/domain'
+import {
+  TagIdEmpty,
+  TagIdInvalid,
+  TagRepository,
+  TagRepositoryProvider,
+} from 'transaction/domain'
 
 export class RemoveTagCommand implements ICommand {
-  constructor(public readonly id: string) {}
+  private constructor(public readonly id: Id) {}
+
+  static create(id: Optional<string>): Result<RemoveTagCommand> {
+    return Id.fromNullable(
+      id,
+      () => new TagIdEmpty(),
+      (value) => new TagIdInvalid(String(value)),
+    ).map((id) => new RemoveTagCommand(id))
+  }
 }
 
 @CommandHandler(RemoveTagCommand)

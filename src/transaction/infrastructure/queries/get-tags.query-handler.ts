@@ -13,10 +13,11 @@ export class GetTagsQueryHandler implements IQueryHandler<GetTags, Result<Tag[]>
   ) {}
 
   public async execute(): Promise<Result<Tag[]>> {
-    const result = await this.tagRepository.findAll()
-    if (result.isFailure()) {
-      return Result.fail(result.getErrorOrThrow())
-    }
-    return Result.ok(result.getOrThrow())
+    // const result = await this.tagRepository.findAll()
+    // if (result.isFailure()) {
+    //   return Result.fail(result.getErrorOrThrow())
+    // }
+    // return Result.ok(result.getOrThrow())
+    throw new Error('Not implemented')
   }
 }

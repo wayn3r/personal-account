@@ -1,3 +1,4 @@
+import { Id } from '@/shared/domain'
 import { Types } from 'mongoose'
 import { Mapper } from 'shared/infrastruture'
 import { Tag } from 'transaction/domain'
@@ -10,7 +11,7 @@ export class TagMapper extends Mapper<MongoDocument, Tag> {
     const TagInstance = class extends Tag {
       static load(): Tag {
         return new Tag({
-          id: from._id.toString(),
+          id: Id.load(from._id.toString()),
           name: from.name,
           active: from.active,
         })
@@ -22,7 +23,7 @@ export class TagMapper extends Mapper<MongoDocument, Tag> {
   public toDocument(from: Tag): MongoDocument {
     const document = new TagDocument() as MongoDocument
 
-    document._id = new Types.ObjectId(from.id)
+    document._id = new Types.ObjectId(from.id.toString())
     document.name = from.name
     document.active = from.active
 

@@ -2,18 +2,20 @@ import { Injectable } from '@nestjs/common'
 import { HttpStatus, Logger } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { Response } from 'express'
-import { BadRequest, Failure, DomainError } from 'shared/domain'
+import { BadRequest, Failure, DomainError, NotFound, Conflict } from 'shared/domain'
 import { ErrorResponse } from './dtos'
 
 @Injectable()
 export class HttpController {
   protected readonly logger: Logger
+  protected readonly response: Response
 
   constructor(
     protected readonly queryBus: QueryBus,
     protected readonly commandBus: CommandBus,
   ) {
     this.logger = new Logger(this.constructor.name)
+    // res = this.context.switchToHttp().getResponse()
   }
 
   protected handleError(res: Response, failure: Failure): Response<ErrorResponse> {
@@ -21,6 +23,12 @@ export class HttpController {
 
     if (failure instanceof BadRequest) {
       return this.badRequest(res, failure.getErrorOrThrow(), failure.message)
+    }
+    if (failure instanceof NotFound) {
+      return this.notFound(res, failure.getErrorOrThrow(), failure.message)
+    }
+    if (failure instanceof Conflict) {
+      return this.conflict(res, failure.getErrorOrThrow(), failure.message)
     }
 
     return this.internalServerError(
@@ -37,6 +45,22 @@ export class HttpController {
   ): Response<ErrorResponse> {
     const errorResponse = new ErrorResponse(error.code, message, HttpStatus.BAD_REQUEST)
     return res.status(HttpStatus.BAD_REQUEST).json(errorResponse)
+  }
+  protected notFound(
+    res: Response,
+    error: DomainError,
+    message: string,
+  ): Response<ErrorResponse> {
+    const errorResponse = new ErrorResponse(error.code, message, HttpStatus.NOT_FOUND)
+    return res.status(HttpStatus.NOT_FOUND).json(errorResponse)
+  }
+  protected conflict(
+    res: Response,
+    error: DomainError,
+    message: string,
+  ): Response<ErrorResponse> {
+    const errorResponse = new ErrorResponse(error.code, message, HttpStatus.CONFLICT)
+    return res.status(HttpStatus.CONFLICT).json(errorResponse)
   }
 
   protected internalServerError(

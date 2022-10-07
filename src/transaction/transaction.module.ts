@@ -2,20 +2,23 @@ import { TagController } from './infrastructure/controllers/tag.controller'
 import { Module } from '@nestjs/common'
 import { CqrsModule } from '@nestjs/cqrs'
 import { MongooseModule } from '@nestjs/mongoose'
-import { MongoTransactionRepository } from './infrastructure/repositories/mongo-transaction.repository'
-import { TransactionSchema } from './infrastructure/schemas/transaction.schema'
-import { TransactionQueryHandlers } from './infrastructure/queries'
-import { TransactionCommandHandlers } from './application/commands'
-import { TagSchema } from './infrastructure/schemas/tag.schema'
-import { MongoTagRepository } from './infrastructure/repositories/mongo-tag.repository'
-import { TransactionMappers } from './infrastructure/mappers'
 import {
   Tag,
   TagRepositoryProvider,
   Transaction,
   TransactionRepositoryProvider,
 } from './domain'
-import { TransactionControllers } from './infrastructure'
+import { TransactionCommandHandlers } from './application'
+import {
+  TransactionControllers,
+  TransactionResponses,
+  TransactionMappers,
+  MongoTagRepository,
+  TagSchema,
+  TransactionQueryHandlers,
+  TransactionSchema,
+  MongoTransactionRepository,
+} from './infrastructure'
 @Module({
   imports: [
     CqrsModule,
@@ -29,6 +32,7 @@ import { TransactionControllers } from './infrastructure'
     ...TransactionMappers,
     ...TransactionQueryHandlers,
     ...TransactionCommandHandlers,
+    ...TransactionResponses,
     { provide: TransactionRepositoryProvider, useClass: MongoTransactionRepository },
     { provide: TagRepositoryProvider, useClass: MongoTagRepository },
   ],

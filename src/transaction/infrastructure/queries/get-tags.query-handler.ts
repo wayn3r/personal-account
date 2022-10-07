@@ -1,23 +1,30 @@
-import { Inject } from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
+import { Model } from 'mongoose'
 import { IQuery, IQueryHandler, QueryHandler } from '@nestjs/cqrs'
-import { Result } from 'shared/domain'
-import { Tag, TagRepository, TagRepositoryProvider } from 'transaction/domain'
+import { Result } from '@/shared/domain'
+import { Tag } from '@/transaction/domain'
+import { TagResponse } from '../dtos'
+import { TagDocument } from '../schemas'
 
 export class GetTags implements IQuery {}
 
 @QueryHandler(GetTags)
-export class GetTagsQueryHandler implements IQueryHandler<GetTags, Result<Tag[]>> {
+export class GetTagsQueryHandler
+  implements IQueryHandler<GetTags, Result<TagResponse[]>>
+{
   public constructor(
-    @Inject(TagRepositoryProvider)
-    private readonly tagRepository: TagRepository,
+    @InjectModel(Tag.name)
+    private readonly tagModel: Model<TagDocument>,
+    private readonly tagMapper: TagResponse,
   ) {}
 
-  public async execute(): Promise<Result<Tag[]>> {
-    // const result = await this.tagRepository.findAll()
-    // if (result.isFailure()) {
-    //   return Result.fail(result.getErrorOrThrow())
-    // }
-    // return Result.ok(result.getOrThrow())
-    throw new Error('Not implemented')
+  public async execute(query: GetTags): Promise<Result<TagResponse[]>> {
+    console.log({ tagMapper: this.tagMapper })
+
+    return this.tagModel
+      .find(query)
+      .exec()
+      .then((tags) => Result.ok(this.tagMapper.map(tags)))
+      .catch((error) => Result.fail(error))
   }
 }

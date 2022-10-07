@@ -1,21 +1,23 @@
-import { Body, Controller, Delete, Param, Post } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
 import { CreateTagCommand, RemoveTagCommand } from 'transaction/application/commands'
 import { Result } from 'shared/domain/result'
 import { Optional } from '@/shared/domain'
 import { HttpController } from '@/shared/infrastruture'
 import { Response } from 'express'
 import { Res } from '@nestjs/common/decorators'
+import { GetTags } from '../queries'
+import { TagResponse } from '../dtos'
 
 @Controller('tags')
 export class TagController extends HttpController {
-  // @Get()
-  // public async findAll(): Promise<ErrorResponse | Tag[]> {
-  //   const result = await this.queryBus.execute<GetTags, Result<Tag[]>>(new GetTags())
-  //   if (result.isFailure()) {
-  //     return this.handleError(result.getErrorOrThrow())
-  //   }
-  //   return result.getOrThrow()
-  // }
+  @Get()
+  public async findAll(@Res() res: Response): Promise<Response> {
+    const query = new GetTags()
+    const result = await this.queryBus.execute<GetTags, Result<TagResponse[]>>(query)
+    if (result.isFailure()) return this.handleError(res, result)
+
+    return this.ok(res, result.getOrThrow())
+  }
 
   @Post('create')
   public async create(

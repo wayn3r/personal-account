@@ -1,13 +1,9 @@
-import { Controller, Delete, Get, Param, Query } from '@nestjs/common'
+import { Controller, Delete, Get, Param } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
-import {
-  GetTransactionsQuery,
-  GetTransactionQuery,
-} from 'transaction/infrastructure/queries'
+import { GetTransactionQuery } from 'transaction/infrastructure/queries'
 import { RemoveTransactionCommand } from 'transaction/application/commands'
 import { Result } from 'shared/domain/result'
-import { ErrorResponse } from 'shared/infrastruture/dtos/error-response'
-import { PaginationQuery } from 'shared/infrastruture/dtos'
+import { ErrorResponse } from '@/shared/infrastruture/dtos/error.response'
 import { Transaction, TransactionError } from 'transaction/domain'
 
 @Controller('transactions')
@@ -16,23 +12,6 @@ export class TransactionController {
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
   ) {}
-
-  @Get()
-  public async findAll(
-    @Query()
-    query: PaginationQuery,
-  ): Promise<ErrorResponse | Transaction[]> {
-    const result = await this.queryBus.execute<
-      GetTransactionsQuery,
-      Result<Transaction[]>
-    >(new GetTransactionsQuery(query))
-
-    if (result.isFailure()) {
-      return this.handleError(result.getErrorOrThrow())
-    }
-
-    return result.getOrThrow()
-  }
 
   @Get(':id')
   public async findOne(@Param() id: string): Promise<ErrorResponse | Transaction> {

@@ -37,6 +37,12 @@ export class HttpController {
       'An unexpected error has ocurred. We are working to fix this as soon as possible.',
     )
   }
+  protected ok<T>(res: Response, data: T): Response<T> {
+    return res.status(HttpStatus.OK).json(data)
+  }
+  protected noContent(res: Response): Response<void> {
+    return res.status(HttpStatus.NO_CONTENT).send()
+  }
 
   protected badRequest(
     res: Response,
@@ -74,9 +80,5 @@ export class HttpController {
       HttpStatus.INTERNAL_SERVER_ERROR,
     )
     return res.status(HttpStatus.BAD_REQUEST).json(errorResponse)
-  }
-
-  protected noContent(res: Response): Response<void> {
-    return res.status(HttpStatus.NO_CONTENT).send()
   }
 }

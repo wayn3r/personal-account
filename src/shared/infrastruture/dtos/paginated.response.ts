@@ -1,4 +1,4 @@
-import { PaginationQuery } from './pagination-query'
+import { PaginationQuery } from './pagination.query'
 
 export class PaginatedResponse<T> {
   public readonly page: number

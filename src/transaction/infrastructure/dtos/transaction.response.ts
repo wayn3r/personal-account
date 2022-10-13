@@ -30,9 +30,6 @@ export class TransactionResponse extends ResponseMapper {
   tags: TagResponse[]
 
   @Expose()
-  status: string
-
-  @Expose()
   date: Date
 
   @Expose()

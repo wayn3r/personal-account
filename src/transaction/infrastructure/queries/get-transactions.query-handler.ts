@@ -30,7 +30,7 @@ export class GetTransactionsQueryHandler
     query: GetTransactionsQuery,
   ): Promise<Result<PaginatedResponse<TransactionResponse>>> {
     const { pagination } = query
-    const pipeline = {}
+    const pipeline = { status: 'active' }
 
     const total = this.trasanctionModel
       .countDocuments(pipeline)

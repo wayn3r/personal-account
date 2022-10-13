@@ -19,10 +19,8 @@ export class GetTagsQueryHandler
   ) {}
 
   public async execute(query: GetTags): Promise<Result<TagResponse[]>> {
-    console.log({ tagMapper: this.tagMapper })
-
     return this.tagModel
-      .find(query)
+      .find({ active: true, ...query })
       .exec()
       .then((tags) => Result.ok(this.tagMapper.map(tags)))
       .catch((error) => Result.fail(error))

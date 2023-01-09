@@ -1,7 +1,7 @@
 import { Module, Global } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'
-import { TransactionsModule } from '@/transaction/transactions.module'
+import { TransactionsModule } from '@/transactions/transactions.module'
 import { CyclesModule } from '@/cycles/cycles.module'
 import { AuthModule } from '@/auth/auth.module'
 import { SharedModule } from '@/shared/shared.module'

@@ -6,7 +6,7 @@ import {
   TagIdInvalid,
   TagRepository,
   TagRepositoryProvider,
-} from 'transaction/domain'
+} from '@/transactions/domain'
 
 export class RemoveTagCommand implements ICommand {
   private constructor(public readonly id: Id) {}

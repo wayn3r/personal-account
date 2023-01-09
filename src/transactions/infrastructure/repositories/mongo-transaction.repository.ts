@@ -7,7 +7,7 @@ import {
   Transaction,
   TransactionError,
   TransactionRepository,
-} from 'transaction/domain'
+} from '@/transactions/domain'
 import { TransactionMapper } from '../mappers'
 import { TransactionDocument } from '../schemas'
 

@@ -14,25 +14,11 @@ import {
 } from '../errors'
 import { TransactionRegistered } from '../events'
 
-type TransactionParams = {
-  id: Id
-  name: string
-  description?: string
-  amount: number
-  currency: string
-  type: string
-  account: string
-  tags: Id[]
-  status: string
-  date: Date
-  createdAt: Date
-}
-
 export enum TRANSACTION_STATUS {
   ACTIVE = 'active',
 }
 
-export class Transaction extends AggregateRoot {
+export class Transaction extends AggregateRoot<Transaction> {
   public static readonly MIN_NAME_LENGTH = 3
   public static readonly MAX_NAME_LENGTH = 50
 
@@ -47,21 +33,6 @@ export class Transaction extends AggregateRoot {
   public readonly status: string
   public readonly date: Date
   public readonly createdAt: Date
-
-  protected constructor(params: TransactionParams) {
-    super()
-    this.id = params.id
-    this.name = params.name
-    this.description = params.description
-    this.amount = params.amount
-    this.currency = params.currency
-    this.type = params.type
-    this.account = params.account
-    this.tags = params.tags
-    this.status = params.status
-    this.date = params.date
-    this.createdAt = params.createdAt
-  }
 
   public static create(optionalParams: {
     name: Optional<string>

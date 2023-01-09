@@ -1,10 +1,10 @@
 import { Controller, Delete, Get, Param } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
-import { GetTransactionQuery } from 'transaction/infrastructure/queries'
-import { RemoveTransactionCommand } from 'transaction/application/commands'
-import { Result } from 'shared/domain/result'
-import { ErrorResponse } from '@/shared/infrastruture/dtos/error.response'
-import { Transaction, TransactionError } from 'transaction/domain'
+import { GetTransactionQuery } from '@/transactions/infrastructure'
+import { RemoveTransactionCommand } from '@/transactions/application'
+import { Result } from '@/shared/domain'
+import { ErrorResponse } from '@/shared/infrastruture'
+import { Transaction, TransactionError } from '@/transactions/domain'
 
 @Controller('transactions')
 export class TransactionController {

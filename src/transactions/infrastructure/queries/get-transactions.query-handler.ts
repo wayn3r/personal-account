@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Result } from 'shared/domain'
 import { PaginatedResponse, PaginationQuery } from 'shared/infrastruture'
-import { Transaction } from '@/transaction/domain'
+import { Transaction } from '@/transactions/domain'
 import { TransactionResponse } from '../dtos'
 import { TransactionDocument } from '../schemas'
 

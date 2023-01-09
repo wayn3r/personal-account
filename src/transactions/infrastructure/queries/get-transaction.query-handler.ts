@@ -5,7 +5,7 @@ import {
   Transaction,
   TransactionRepository,
   TransactionRepositoryProvider,
-} from 'transaction/domain'
+} from '@/transactions/domain'
 
 export class GetTransactionQuery implements IQuery {
   constructor(public readonly id: string) {}

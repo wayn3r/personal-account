@@ -3,8 +3,8 @@ import { Failure, Result } from './result'
 export class Optional<T> {
   private constructor(private readonly value?: T) {}
 
-  public static of<T>(value: T): Optional<T> {
-    return new Optional<T>(value)
+  public static of<T>(value: T): Optional<NonNullable<T>> {
+    return new Optional<NonNullable<T>>(value as NonNullable<T>)
   }
 
   public static empty<T>(): Optional<T> {
@@ -51,8 +51,12 @@ export class Optional<T> {
     return Optional.of(mapper(this.getOrThrow()))
   }
 
-  public toResult(): Result<T> {
+  public getResult(): Result<T> {
     return Result.ok(this.isPresent() ? this.getOrThrow() : undefined)
+  }
+
+  public getResultOrElse(defaultValue: () => Result<T>): Result<T> {
+    return this.isPresent() ? Result.ok(this.getOrThrow()) : defaultValue()
   }
 
   public filter(predicate: (value: T) => boolean): Optional<T> {

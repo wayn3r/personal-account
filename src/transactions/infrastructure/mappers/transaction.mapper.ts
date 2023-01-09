@@ -1,7 +1,7 @@
 import { Types } from 'mongoose'
 import { Id } from 'shared/domain'
 import { Mapper } from 'shared/infrastruture/mappers/mapper'
-import { Transaction } from 'transaction/domain/entities/transaction.entity'
+import { Transaction } from '@/transactions/domain'
 import { TransactionDocument } from '../schemas/transaction.schema'
 
 type MongoDocument = TransactionDocument & { _id: Types.ObjectId }

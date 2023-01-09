@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
-import { CreateTagCommand, RemoveTagCommand } from 'transaction/application/commands'
+import { CreateTagCommand, RemoveTagCommand } from '@/transactions/application'
 import { Result } from 'shared/domain/result'
 import { Optional } from '@/shared/domain'
 import { HttpController } from '@/shared/infrastruture'

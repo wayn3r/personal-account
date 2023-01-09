@@ -5,7 +5,7 @@ import {
   Transaction,
   TransactionRepository,
   TransactionRepositoryProvider,
-} from 'transaction/domain'
+} from '@/transactions/domain'
 
 export class RegisterTransactionCommand implements ICommand {
   private constructor(public readonly transaction: Transaction) {}
@@ -31,13 +31,13 @@ export class RegisterTransactionCommand implements ICommand {
           ),
         ),
       )
-      .toResult()
+      .getResult()
       .flatMap((tagsResult) => Result.combine(...tagsResult))
 
     const dateResult = params.date
       .replaceIfEmptyWith(new Date().toISOString())
       .map((date) => new Date(date))
-      .toResult()
+      .getResult()
 
     return Result.combine(tagsResult, dateResult)
       .flatMap(([tags, date]) =>

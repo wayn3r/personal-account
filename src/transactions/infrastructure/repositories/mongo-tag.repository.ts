@@ -7,7 +7,7 @@ import {
   TagNameInvalid,
   TagNotFound,
   TagRepository,
-} from 'transaction/domain'
+} from '@/transactions/domain'
 import { TagMapper } from '../mappers'
 import { TagDocument } from '../schemas'
 

@@ -2,7 +2,7 @@ import { Body, Controller, Post, Res } from '@nestjs/common'
 import { Response } from 'express'
 import { Optional, Result } from '@/shared/domain'
 import { ErrorResponse, HttpController } from '@/shared/infrastruture'
-import { RegisterTransactionCommand } from '@/transaction/application'
+import { RegisterTransactionCommand } from '@/transactions/application'
 
 @Controller('transactions/register')
 export class RegisterTransactionController extends HttpController {

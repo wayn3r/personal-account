@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Types } from 'mongoose'
 import { COLLECTION_NAMES } from 'shared/infrastruture/config'
-import { Tag } from 'transaction/domain'
+import { Tag } from '@/transactions/domain'
 
 @Schema({ collection: COLLECTION_NAMES.TRANSACTION, versionKey: false })
 export class TransactionDocument {

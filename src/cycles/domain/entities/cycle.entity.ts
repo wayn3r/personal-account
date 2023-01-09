@@ -1,30 +1,38 @@
-import { Result, DomainError } from '@/shared/domain'
+import { Result, DomainError, Id, AggregateRoot } from '@/shared/domain'
 
-export class Cycle {
-  protected constructor(
-    public readonly id: string,
-    public readonly userId: string,
-    public readonly startDate: Date,
-    private _transactions: string[],
-    private _endDate: Date | undefined,
-    public readonly createdAt: Date,
-    public readonly updatedAt: Date,
-  ) {}
+export class Cycle extends AggregateRoot<Cycle> {
+  public readonly id: Id
+  public readonly userId: Id
+  public readonly startDate: Date
+  private _transactions: Id[]
+  private _endDate: Date | undefined
+  public readonly createdAt: Date
+  public readonly updatedAt: Date
 
   get endDate(): Date | undefined {
     return this._endDate && new Date(this._endDate)
   }
 
-  get transactions(): string[] {
+  get transactions(): Id[] {
     return [...this._transactions]
   }
 
-  static create(userId: string, startDate = new Date()): Result<Cycle> {
+  static create(userId: Id, startDate = new Date()): Result<Cycle> {
     const today = new Date()
-    return Result.ok(new Cycle('', userId, startDate, [], undefined, today, today))
+    return Result.ok(
+      new Cycle({
+        id: Id.generate(),
+        userId,
+        startDate,
+        transactions: [],
+        endDate: undefined,
+        createdAt: today,
+        updatedAt: today,
+      }),
+    )
   }
 
-  public addTransaction(transactionId: string): Result<void> {
+  public addTransaction(transactionId: Id): Result<void> {
     if (this._endDate) return Result.fail(DomainError.of('CYCLE_ALREADY_CLOSED'))
 
     const hasTransaction = this._transactions.includes(transactionId)

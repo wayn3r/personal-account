@@ -37,4 +37,4 @@ import {
     { provide: TagRepositoryProvider, useClass: MongoTagRepository },
   ],
 })
-export class TransactionModule {}
+export class TransactionsModule {}

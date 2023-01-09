@@ -1,7 +1,8 @@
 import { Module, Global } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'
-import { TransactionModule } from '@/transaction/transaction.module'
+import { TransactionsModule } from '@/transaction/transactions.module'
+import { CyclesModule } from '@/cycles/cycles.module'
 import { AuthModule } from '@/auth/auth.module'
 import { SharedModule } from '@/shared/shared.module'
 
@@ -10,7 +11,8 @@ import { SharedModule } from '@/shared/shared.module'
   imports: [
     ConfigModule.forRoot({ expandVariables: true }),
     MongooseModule.forRoot(String(process.env.MONGO_URI)),
-    TransactionModule,
+    TransactionsModule,
+    CyclesModule,
     AuthModule,
     SharedModule,
   ],

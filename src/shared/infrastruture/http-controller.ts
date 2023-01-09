@@ -15,20 +15,21 @@ export class HttpController {
     protected readonly commandBus: CommandBus,
   ) {
     this.logger = new Logger(this.constructor.name)
-    // res = this.context.switchToHttp().getResponse()
   }
 
   protected handleError(res: Response, failure: Failure): Response<ErrorResponse> {
-    this.logger.error(failure.getErrorOrThrow())
+    const error = failure.getErrorOrThrow()
+    this.logger.error(`[Code: ${error.code}] ${error.message}`)
+    this.logger.error(error.stack)
 
     if (failure instanceof BadRequest) {
-      return this.badRequest(res, failure.getErrorOrThrow(), failure.message)
+      return this.badRequest(res, error, failure.message)
     }
     if (failure instanceof NotFound) {
-      return this.notFound(res, failure.getErrorOrThrow(), failure.message)
+      return this.notFound(res, error, failure.message)
     }
     if (failure instanceof Conflict) {
-      return this.conflict(res, failure.getErrorOrThrow(), failure.message)
+      return this.conflict(res, error, failure.message)
     }
 
     return this.internalServerError(

@@ -26,6 +26,7 @@ export class MongoCycleRepository implements CycleRepository {
 
   async save(cycle: Cycle): Promise<Result<void>> {
     const doc = this.mongoCycleMapper.reverse(cycle)
+
     return this.mongoCycleModel
       .create(doc)
       .then(() => Result.ok())

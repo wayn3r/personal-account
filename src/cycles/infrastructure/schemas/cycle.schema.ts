@@ -1,9 +1,12 @@
 import { COLLECTION_NAMES } from '@/shared/infrastruture'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document, Types } from 'mongoose'
+import { Types } from 'mongoose'
 
 @Schema({ collection: COLLECTION_NAMES.CYCLE })
 export class MongoCycle {
+  @Prop({ type: String, required: true })
+  name: string
+
   @Prop({ type: Types.ObjectId, required: true })
   userId: Types.ObjectId
 
@@ -23,6 +26,6 @@ export class MongoCycle {
   updatedAt: Date
 }
 
-export type MongoCycleDocument = MongoCycle & Document
+export type MongoCycleDocument = MongoCycle & { _id: Types.ObjectId }
 
 export const MongoCycleSchema = SchemaFactory.createForClass(MongoCycle)

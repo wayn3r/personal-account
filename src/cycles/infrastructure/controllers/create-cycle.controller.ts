@@ -14,6 +14,7 @@ export class CreateCycleController extends HttpController {
     const optionalBody = Optional.of(body)
 
     const commandResult = CreateCycleCommand.create(
+      optionalBody.getFromObject('name'),
       optionalBody.getFromObject('userId'),
       optionalBody.getFromObject('startDate'),
     )

@@ -9,6 +9,7 @@ import {
 
 export class Cycle extends AggregateRoot<Cycle> {
   public readonly id: Id
+  public readonly name: string
   public readonly userId: Id
   public readonly startDate: Date
   private _transactions: Id[]
@@ -24,11 +25,12 @@ export class Cycle extends AggregateRoot<Cycle> {
     return [...this._transactions]
   }
 
-  static create(userId: Id, startDate = new Date()): Result<Cycle> {
+  static create(name: string, userId: Id, startDate = new Date()): Result<Cycle> {
     const today = new Date()
     return Result.ok(
       new Cycle({
         id: Id.generate(),
+        name,
         userId,
         startDate,
         transactions: [],

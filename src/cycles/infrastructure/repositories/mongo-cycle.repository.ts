@@ -14,6 +14,16 @@ export class MongoCycleRepository implements CycleRepository {
     private readonly mongoCycleMapper: MongoCycleMapper,
   ) {}
 
+  async findById(id: Id): Promise<Result<Optional<Cycle>>> {
+    const _id = new Types.ObjectId(id.toString())
+    return this.mongoCycleModel
+      .findOne({ _id })
+      .then((cycle) => Optional.of(cycle))
+      .then((optional) => optional.map((cycle) => this.mongoCycleMapper.map(cycle)))
+      .then((cycle) => Result.ok(cycle))
+      .catch((error) => Result.fail(error))
+  }
+
   async save(cycle: Cycle): Promise<Result<void>> {
     const doc = this.mongoCycleMapper.reverse(cycle)
     return this.mongoCycleModel

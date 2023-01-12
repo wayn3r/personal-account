@@ -1,10 +1,11 @@
 import { Module, Global } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'
 import { TransactionsModule } from '@/transactions/transactions.module'
 import { CyclesModule } from '@/cycles/cycles.module'
 import { AuthModule } from '@/auth/auth.module'
 import { SharedModule } from '@/shared/shared.module'
+import { Config } from './config'
 
 @Global()
 @Module({
@@ -17,7 +18,13 @@ import { SharedModule } from '@/shared/shared.module'
     SharedModule,
   ],
   controllers: [],
-  providers: [],
-  exports: [SharedModule],
+  providers: [
+    {
+      provide: Config,
+      useFactory: (configService: ConfigService) => new Config(configService),
+      inject: [ConfigService],
+    },
+  ],
+  exports: [SharedModule, Config],
 })
 export class AppModule {}

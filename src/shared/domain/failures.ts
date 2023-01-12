@@ -17,3 +17,9 @@ export class Conflict extends Failure {
     super(domainError)
   }
 }
+
+export class Unauthorized extends Failure {
+  public constructor(domainError: DomainError, public readonly message = 'Unauthorized') {
+    super(domainError)
+  }
+}

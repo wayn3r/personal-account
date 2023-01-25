@@ -1,10 +1,12 @@
+import { AuthGuard } from '@/auth/infrastructure'
 import { CloseCycleCommand } from '@/cycles/application'
 import { Optional, Result } from '@/shared/domain/entities'
 import { ErrorResponse, HttpController } from '@/shared/infrastruture'
-import { Controller, Body, Res, Delete } from '@nestjs/common'
+import { Controller, Body, Res, Delete, UseGuards } from '@nestjs/common'
 import { Response } from 'express'
 
 @Controller('/cycles')
+@UseGuards(AuthGuard)
 export class CloseCycleController extends HttpController {
   @Delete()
   public async create(

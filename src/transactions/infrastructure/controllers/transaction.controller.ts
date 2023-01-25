@@ -1,12 +1,14 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common'
+import { Controller, Delete, Get, Param, UseGuards } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { GetTransactionQuery } from '@/transactions/infrastructure'
 import { RemoveTransactionCommand } from '@/transactions/application'
 import { Result } from '@/shared/domain/entities'
 import { ErrorResponse } from '@/shared/infrastruture'
 import { Transaction, TransactionError } from '@/transactions/domain'
+import { AuthGuard } from '@/auth/infrastructure'
 
 @Controller('transactions')
+@UseGuards(AuthGuard)
 export class TransactionController {
   constructor(
     private readonly queryBus: QueryBus,

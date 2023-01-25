@@ -1,13 +1,23 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common'
 import { CreateTagCommand, RemoveTagCommand } from '@/transactions/application'
 import { Optional, Result } from '@/shared/domain'
 import { HttpController } from '@/shared/infrastruture'
 import { Response } from 'express'
-import { Res } from '@nestjs/common/decorators'
 import { GetTags } from '../queries'
 import { TagResponse } from '../dtos'
+import { AuthGuard } from '@/auth/infrastructure'
 
 @Controller('tags')
+@UseGuards(AuthGuard)
 export class TagController extends HttpController {
   @Get()
   public async findAll(@Res() res: Response): Promise<Response> {

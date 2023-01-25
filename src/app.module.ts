@@ -28,6 +28,6 @@ import { Config } from './config'
       inject: [ConfigService],
     },
   ],
-  exports: [SharedModule, Config],
+  exports: [SharedModule, Config, AuthModule],
 })
 export class AppModule {}

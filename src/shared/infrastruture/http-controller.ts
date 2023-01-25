@@ -2,7 +2,13 @@ import { Injectable } from '@nestjs/common'
 import { HttpStatus, Logger } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { Response } from 'express'
-import { BadRequest, Failure, DomainError, NotFound, Conflict } from '@/shared/domain/entities'
+import {
+  BadRequest,
+  Failure,
+  DomainError,
+  NotFound,
+  Conflict,
+} from '@/shared/domain/entities'
 import { ErrorResponse } from './dtos'
 
 @Injectable()
@@ -50,7 +56,11 @@ export class HttpController {
     error: DomainError,
     message: string,
   ): Response<ErrorResponse> {
-    const errorResponse = new ErrorResponse(error.code, message, HttpStatus.BAD_REQUEST)
+    const errorResponse = new ErrorResponse({
+      code: error.code,
+      message,
+      status: HttpStatus.BAD_REQUEST,
+    })
     return res.status(HttpStatus.BAD_REQUEST).json(errorResponse)
   }
   protected notFound(
@@ -58,7 +68,11 @@ export class HttpController {
     error: DomainError,
     message: string,
   ): Response<ErrorResponse> {
-    const errorResponse = new ErrorResponse(error.code, message, HttpStatus.NOT_FOUND)
+    const errorResponse = new ErrorResponse({
+      code: error.code,
+      message,
+      status: HttpStatus.NOT_FOUND,
+    })
     return res.status(HttpStatus.NOT_FOUND).json(errorResponse)
   }
   protected conflict(
@@ -66,7 +80,11 @@ export class HttpController {
     error: DomainError,
     message: string,
   ): Response<ErrorResponse> {
-    const errorResponse = new ErrorResponse(error.code, message, HttpStatus.CONFLICT)
+    const errorResponse = new ErrorResponse({
+      code: error.code,
+      message,
+      status: HttpStatus.CONFLICT,
+    })
     return res.status(HttpStatus.CONFLICT).json(errorResponse)
   }
 
@@ -75,11 +93,11 @@ export class HttpController {
     error: DomainError,
     message: string,
   ): Response<ErrorResponse> {
-    const errorResponse = new ErrorResponse(
-      error.code,
+    const errorResponse = new ErrorResponse({
+      code: error.code,
       message,
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    )
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+    })
     return res.status(HttpStatus.BAD_REQUEST).json(errorResponse)
   }
 }

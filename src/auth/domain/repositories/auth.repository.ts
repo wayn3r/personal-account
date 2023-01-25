@@ -6,4 +6,4 @@ export interface AuthRepository {
   getExternalUser(token: string): Promise<Result<Optional<ExternalUser>>>
 }
 
-export const AuthRepositoryProvider = 'AuthRepository'
+export const AuthRepositoryProvider = Symbol('AuthRepository')

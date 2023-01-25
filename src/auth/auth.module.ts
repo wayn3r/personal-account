@@ -1,17 +1,22 @@
 import { OAuth2Client } from 'google-auth-library'
 import { Module } from '@nestjs/common'
 import { Config } from '@/config'
-import { AuthControllers, AuthMappers, GoogleAuthRepository } from './infrastructure'
+import {
+  AuthControllers,
+  AuthGuard,
+  AuthMappers,
+  GoogleAuthRepository,
+} from './infrastructure'
 import { AuthRepositoryProvider } from './domain'
 import { AuthCommandHandlers } from './application'
 import { CqrsModule } from '@nestjs/cqrs'
 import { HttpModule } from '@nestjs/axios'
-import { SharedModule } from '@/shared/shared.module'
 
 @Module({
-  imports: [CqrsModule, HttpModule, SharedModule],
+  imports: [CqrsModule, HttpModule],
   controllers: [...AuthControllers],
   providers: [
+    AuthGuard,
     ...AuthCommandHandlers,
     ...AuthMappers,
     {
@@ -21,5 +26,6 @@ import { SharedModule } from '@/shared/shared.module'
     },
     { provide: AuthRepositoryProvider, useClass: GoogleAuthRepository },
   ],
+  exports: [AuthGuard, AuthRepositoryProvider],
 })
 export class AuthModule {}

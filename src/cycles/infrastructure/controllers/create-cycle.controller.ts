@@ -1,10 +1,12 @@
+import { AuthGuard } from '@/auth/infrastructure'
 import { CreateCycleCommand } from '@/cycles/application'
 import { Optional, Result } from '@/shared/domain/entities'
 import { ErrorResponse, HttpController } from '@/shared/infrastruture'
-import { Controller, Post, Body, Res } from '@nestjs/common'
+import { Controller, Post, Body, Res, UseGuards } from '@nestjs/common'
 import { Response } from 'express'
 
 @Controller('/cycles')
+@UseGuards(AuthGuard)
 export class CreateCycleController extends HttpController {
   @Post()
   public async create(

@@ -5,12 +5,14 @@ import {
   PaginatedResponse,
   PaginationQuery,
 } from '@/shared/infrastruture'
-import { Query, Controller, Get, Res } from '@nestjs/common'
+import { Query, Controller, Get, Res, UseGuards } from '@nestjs/common'
 import { Response } from 'express'
 import { TransactionResponse } from '../dtos'
 import { GetTransactionsQuery } from '../queries'
+import { AuthGuard } from '@/auth/infrastructure'
 
 @Controller('transactions')
+@UseGuards(AuthGuard)
 export class GetTransactionsController extends HttpController {
   @Get()
   public async find(

@@ -1,10 +1,12 @@
-import { Body, Controller, Post, Res } from '@nestjs/common'
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common'
 import { Response } from 'express'
 import { Optional, Result } from '@/shared/domain/entities'
 import { ErrorResponse, HttpController } from '@/shared/infrastruture'
 import { RegisterTransactionCommand } from '@/transactions/application'
+import { AuthGuard } from '@/auth/infrastructure'
 
 @Controller('transactions/register')
+@UseGuards(AuthGuard)
 export class RegisterTransactionController extends HttpController {
   @Post()
   public async register(

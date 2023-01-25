@@ -7,7 +7,7 @@ type ArrayOfResultValues<T> = {
 export class Result<T = void> {
   protected constructor(
     private readonly value: T,
-    private readonly error?: DomainError,
+    protected readonly error?: DomainError,
   ) {}
 
   public isFailure(): this is Failure {
@@ -81,6 +81,10 @@ export class Result<T = void> {
 export class Failure extends Result<never> {
   public constructor(error: DomainError) {
     super(undefined as never, error)
+  }
+
+  toString(): string {
+    return `[${this.constructor.name}]${this.error?.toString()}`
   }
 }
 

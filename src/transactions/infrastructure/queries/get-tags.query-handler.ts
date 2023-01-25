@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { IQuery, IQueryHandler, QueryHandler } from '@nestjs/cqrs'
-import { Result } from '@/shared/domain'
+import { Result } from '@/shared/domain/entities'
 import { Tag } from '@/transactions/domain'
 import { TagResponse } from '../dtos'
 import { TagDocument } from '../schemas'

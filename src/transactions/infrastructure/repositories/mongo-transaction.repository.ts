@@ -1,6 +1,6 @@
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, QueryOptions, Types } from 'mongoose'
-import { DomainError, Result } from 'shared/domain'
+import { DomainError, Result } from '@/shared/domain/entities'
 import { PaginatedResponse, PaginationQuery } from 'shared/infrastruture'
 import {
   Tag,
@@ -51,7 +51,7 @@ export class MongoTransactionRepository implements TransactionRepository {
   }
 
   public async register(transaction: Transaction): Promise<Result> {
-    const document = this.transactionMapper.toDocument(transaction)
+    const document = this.transactionMapper.reverseMap(transaction)
     return this.transactionModel
       .create(document)
       .then(() => Result.ok())

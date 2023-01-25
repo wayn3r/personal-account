@@ -1,4 +1,4 @@
-import { Id, Optional, Result } from '@/shared/domain'
+import { Id, Optional, Result } from '@/shared/domain/entities'
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs'
 import {

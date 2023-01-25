@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common'
 import { IQuery, IQueryHandler, QueryHandler } from '@nestjs/cqrs'
-import { Result } from 'shared/domain'
+import { Result } from '@/shared/domain/entities'
 import {
   Transaction,
   TransactionRepository,

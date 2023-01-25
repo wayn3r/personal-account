@@ -1,4 +1,4 @@
-import { Id, Optional, Result } from '@/shared/domain'
+import { Id, Optional, Result } from '@/shared/domain/entities'
 import { TagNameEmpty, TagNameInvalid, TagNameTooShort } from '../errors'
 
 const MIN_TAG_NAME_LENGTH = 3

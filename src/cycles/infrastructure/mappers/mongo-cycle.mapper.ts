@@ -1,7 +1,7 @@
 import { Cycle } from '@/cycles/domain'
 import { MongoCycleDocument } from '../schemas'
 import { Types } from 'mongoose'
-import { Id } from '@/shared/domain'
+import { Id } from '@/shared/domain/entities'
 
 export class MongoCycleMapper {
   map(cycle: MongoCycleDocument): Cycle {

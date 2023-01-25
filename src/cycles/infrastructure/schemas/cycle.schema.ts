@@ -2,7 +2,7 @@ import { COLLECTION_NAMES } from '@/shared/infrastruture'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Types } from 'mongoose'
 
-@Schema({ collection: COLLECTION_NAMES.CYCLE })
+@Schema({ collection: COLLECTION_NAMES.CYCLE, versionKey: false })
 export class MongoCycleDocument {
   @Prop({ type: Types.ObjectId, required: true })
   _id: Types.ObjectId

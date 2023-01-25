@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Res } from '@nestjs/common'
 import { Response } from 'express'
-import { Optional, Result } from '@/shared/domain'
+import { Optional, Result } from '@/shared/domain/entities'
 import { ErrorResponse, HttpController } from '@/shared/infrastruture'
 import { RegisterTransactionCommand } from '@/transactions/application'
 

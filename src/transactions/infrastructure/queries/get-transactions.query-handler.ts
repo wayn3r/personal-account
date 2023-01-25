@@ -1,7 +1,7 @@
 import { IQuery, IQueryHandler, QueryHandler } from '@nestjs/cqrs'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { Result } from 'shared/domain'
+import { Result } from '@/shared/domain/entities'
 import { PaginatedResponse, PaginationQuery } from 'shared/infrastruture'
 import { Transaction } from '@/transactions/domain'
 import { TransactionResponse } from '../dtos'

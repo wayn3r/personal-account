@@ -11,7 +11,10 @@ import { Config } from './config'
 @Module({
   imports: [
     ConfigModule.forRoot({ expandVariables: true }),
-    MongooseModule.forRoot(String(process.env.MONGO_URI)),
+    MongooseModule.forRootAsync({
+      inject: [Config],
+      useFactory: (config: Config) => config.mongo,
+    }),
     TransactionsModule,
     CyclesModule,
     AuthModule,

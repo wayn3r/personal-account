@@ -5,7 +5,7 @@ import {
   Id,
   Optional,
   Result,
-} from 'shared/domain'
+} from '@/shared/domain/entities'
 import {
   TransactionNameEmpty,
   TransactionNameInvalid,

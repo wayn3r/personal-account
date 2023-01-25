@@ -1,6 +1,6 @@
 import { InjectModel } from '@nestjs/mongoose'
 import { Error as MongooseError, Model, Types } from 'mongoose'
-import { Id, Optional, Result } from 'shared/domain'
+import { Id, Optional, Result } from '@/shared/domain/entities'
 import {
   Tag,
   TagDuplicated,
@@ -20,7 +20,7 @@ export class MongoTagRepository implements TagRepository {
 
   public async createOne(tag: Tag): Promise<Result> {
     try {
-      const doc = this.tagMapper.toDocument(tag)
+      const doc = this.tagMapper.reverseMap(tag)
       await this.tagModel.create(doc)
       return Result.ok()
     } catch (error) {

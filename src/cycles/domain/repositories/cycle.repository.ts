@@ -1,4 +1,4 @@
-import { Id, Optional, Result } from '@/shared/domain'
+import { Id, Optional, Result } from '@/shared/domain/entities'
 import { Cycle } from '../entities'
 
 export interface CycleRepository {

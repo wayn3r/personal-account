@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { HttpStatus, Logger } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { Response } from 'express'
-import { BadRequest, Failure, DomainError, NotFound, Conflict } from 'shared/domain'
+import { BadRequest, Failure, DomainError, NotFound, Conflict } from '@/shared/domain/entities'
 import { ErrorResponse } from './dtos'
 
 @Injectable()

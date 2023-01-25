@@ -1,4 +1,4 @@
-import { DomainEvent } from 'shared/domain'
+import { DomainEvent } from '@/shared/domain/entities'
 
 export class TransactionRegistered extends DomainEvent {
   public readonly eventName = 'transaction.registered'

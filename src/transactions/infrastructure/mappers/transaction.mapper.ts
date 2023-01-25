@@ -1,5 +1,5 @@
 import { Types } from 'mongoose'
-import { Id } from 'shared/domain'
+import { Id } from '@/shared/domain/entities'
 import { Mapper } from 'shared/infrastruture/mappers/mapper'
 import { Transaction } from '@/transactions/domain'
 import { TransactionDocument } from '../schemas/transaction.schema'
@@ -29,7 +29,7 @@ export class TransactionMapper extends Mapper<MongoDocument, Transaction> {
     return TransactionInstance.load()
   }
 
-  public toDocument(from: Transaction): MongoDocument {
+  public reverseMap(from: Transaction): MongoDocument {
     const document = new TransactionDocument() as MongoDocument
 
     document._id = new Types.ObjectId(from.id.toString())

@@ -2,7 +2,7 @@ import { Controller, Delete, Get, Param } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { GetTransactionQuery } from '@/transactions/infrastructure'
 import { RemoveTransactionCommand } from '@/transactions/application'
-import { Result } from '@/shared/domain'
+import { Result } from '@/shared/domain/entities'
 import { ErrorResponse } from '@/shared/infrastruture'
 import { Transaction, TransactionError } from '@/transactions/domain'
 

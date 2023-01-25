@@ -1,4 +1,4 @@
-import { Id } from '@/shared/domain'
+import { Id } from '@/shared/domain/entities'
 import { Types } from 'mongoose'
 import { Mapper } from 'shared/infrastruture'
 import { Tag } from '@/transactions/domain'
@@ -20,7 +20,7 @@ export class TagMapper extends Mapper<MongoDocument, Tag> {
     return TagInstance.load()
   }
 
-  public toDocument(from: Tag): MongoDocument {
+  public reverseMap(from: Tag): MongoDocument {
     const document = new TagDocument() as MongoDocument
 
     document._id = new Types.ObjectId(from.id.toString())

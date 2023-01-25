@@ -1,4 +1,4 @@
-import { Optional } from '@/shared/domain'
+import { Optional } from '@/shared/domain/entities'
 
 export const DEFAULT_PAGINATION_CONFIG = {
   minPage: 1,

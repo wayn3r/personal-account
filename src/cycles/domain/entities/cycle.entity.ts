@@ -5,7 +5,7 @@ import {
   AggregateRoot,
   BadRequest,
   Conflict,
-} from '@/shared/domain'
+} from '@/shared/domain/entities'
 
 export class Cycle extends AggregateRoot<Cycle> {
   public readonly id: Id

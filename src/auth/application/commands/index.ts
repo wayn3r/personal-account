@@ -1,5 +1,5 @@
-import { LoginCommandHandler } from './login.command-handler'
+import { SigninCommandHandler } from './signin.command-handler'
 
-export * from './login.command-handler'
+export * from './signin.command-handler'
 
-export const AuthCommandHandlers = [LoginCommandHandler]
+export const AuthCommandHandlers = [SigninCommandHandler]

@@ -1,5 +1,5 @@
 import { CloseCycleCommand } from '@/cycles/application'
-import { Optional, Result } from '@/shared/domain'
+import { Optional, Result } from '@/shared/domain/entities'
 import { ErrorResponse, HttpController } from '@/shared/infrastruture'
 import { Controller, Body, Res, Delete } from '@nestjs/common'
 import { Response } from 'express'

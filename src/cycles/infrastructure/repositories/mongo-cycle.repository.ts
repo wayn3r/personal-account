@@ -1,7 +1,7 @@
 import { Model, Types } from 'mongoose'
 import { Injectable } from '@nestjs/common'
 import { Cycle, CycleRepository } from '@/cycles/domain'
-import { Id, Optional, Result } from '@/shared/domain'
+import { Id, Optional, Result } from '@/shared/domain/entities'
 import { MongoCycleDocument } from '../schemas'
 import { MongoCycleMapper } from '../mappers'
 import { InjectModel } from '@nestjs/mongoose'

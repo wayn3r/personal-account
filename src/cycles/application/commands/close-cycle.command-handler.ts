@@ -1,5 +1,5 @@
 import { CycleRepository, CycleRepositoryProvider } from '@/cycles/domain'
-import { BadRequest, DomainError, Id, NotFound, Optional, Result } from '@/shared/domain'
+import { BadRequest, DomainError, Id, NotFound, Optional, Result } from '@/shared/domain/entities'
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 

@@ -1,12 +1,10 @@
-import { Id } from '@/shared/domain'
+import { AggregateRoot } from '@/shared/domain'
 
-export class User {
-  constructor(
-    public readonly id: Id,
-    public readonly email: { value: string; verified: boolean },
-    public readonly name: { firstName: string; lastName: string },
-    public readonly picture: string,
-    public readonly locale: string,
-    public readonly createdAt: Date,
-  ) {}
+export class ExternalUser extends AggregateRoot<ExternalUser> {
+  public readonly id: string
+  public readonly email: { readonly id: string; readonly verified: boolean }
+  public readonly name: string
+  public readonly lastName: string
+  public readonly picture: string
+  public readonly locale: string
 }

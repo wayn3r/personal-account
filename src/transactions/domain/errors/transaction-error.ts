@@ -1,4 +1,4 @@
-import { BadRequest, Conflict, DomainError, NotFound } from 'shared/domain'
+import { BadRequest, Conflict, DomainError, NotFound } from '@/shared/domain/entities'
 
 export const enum TransactionError {
   INVALID_TRANSACTION = 'INVALID_TRANSACTION',

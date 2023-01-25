@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs'
-import { BadRequest, DomainError, Id, Optional, Result } from 'shared/domain'
+import { BadRequest, DomainError, Id, Optional, Result } from '@/shared/domain/entities'
 import {
   Transaction,
   TransactionRepository,

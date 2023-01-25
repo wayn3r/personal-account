@@ -1,4 +1,4 @@
-import { Result } from 'shared/domain/result'
+import { Result } from '@/shared/domain'
 import { Transaction } from '../entities/transaction.entity'
 
 export interface TransactionRepository {

@@ -7,4 +7,8 @@ export class DomainError extends Error {
   static of(code: string): DomainError {
     return new DomainError(code)
   }
+
+  toString(): string {
+    return `${this.name}: ${this.code} | ${this.message}\n${this.stack}`
+  }
 }

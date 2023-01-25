@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs'
-import { Optional, Result } from 'shared/domain'
+import { Optional, Result } from '@/shared/domain/entities'
 import { Tag, TagRepository, TagRepositoryProvider } from '@/transactions/domain'
 
 export class CreateTagCommand implements ICommand {

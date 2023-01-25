@@ -1,5 +1,4 @@
-import { Id, Optional } from '@/shared/domain'
-import { Result } from 'shared/domain/result'
+import { Id, Optional, Result } from '@/shared/domain'
 import { Tag } from '../entities/tag.entity'
 
 export interface TagRepository {

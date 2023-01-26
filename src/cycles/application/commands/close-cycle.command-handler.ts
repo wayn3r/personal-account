@@ -1,14 +1,19 @@
 import { CycleRepository, CycleRepositoryProvider } from '@/cycles/domain'
-import { BadRequest, DomainError, Id, NotFound, Optional, Result } from '@/shared/domain/entities'
+import { BadRequest, DomainError, Id, NotFound, Optional, Result } from '@/shared/domain'
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 
 const UTC_DATE_REGEX =
   /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{2,6})Z$/
 export class CloseCycleCommand {
-  private constructor(public readonly id: Id, public readonly endDate: Date) {}
+  private constructor(
+    public userId: Id,
+    public readonly id: Id,
+    public readonly endDate: Date,
+  ) {}
 
   static create(
+    userId: Id,
     id: Optional<string>,
     endDate: Optional<string>,
   ): Result<CloseCycleCommand> {
@@ -27,7 +32,7 @@ export class CloseCycleCommand {
       .map((value) => new Date(value))
 
     return Result.combine(idResult, endDateResult).map(
-      ([id, endDate]) => new CloseCycleCommand(id, endDate),
+      ([id, endDate]) => new CloseCycleCommand(userId, id, endDate),
     )
   }
 }
@@ -42,10 +47,11 @@ export class CloseCycleCommandHandler
   ) {}
 
   async execute(command: CloseCycleCommand): Promise<Result<void>> {
-    const { id, endDate } = command
+    const { userId, id, endDate } = command
 
-    const cycleResult = (await this.cycleRepository.findById(id)).flatMap((optional) =>
-      optional.validateIsPresent(() => new NotFound(DomainError.of('CYCLE_NOT_FOUND'))),
+    const cycleResult = (await this.cycleRepository.findById(userId, id)).flatMap(
+      (optional) =>
+        optional.validateIsPresent(() => new NotFound(DomainError.of('CYCLE_NOT_FOUND'))),
     )
     if (cycleResult.isFailure()) return cycleResult
 

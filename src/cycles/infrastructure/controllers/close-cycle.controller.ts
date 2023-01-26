@@ -1,6 +1,6 @@
-import { AuthGuard } from '@/auth/infrastructure'
+import { AuthGuard, CurrentUser } from '@/auth/infrastructure'
 import { CloseCycleCommand } from '@/cycles/application'
-import { Optional, Result } from '@/shared/domain/entities'
+import { Optional, Result, User } from '@/shared/domain'
 import { ErrorResponse, HttpController } from '@/shared/infrastruture'
 import { Controller, Body, Res, Delete, UseGuards } from '@nestjs/common'
 import { Response } from 'express'
@@ -10,12 +10,14 @@ import { Response } from 'express'
 export class CloseCycleController extends HttpController {
   @Delete()
   public async create(
+    @CurrentUser() user: User,
     @Body() body: Record<string, any>,
     @Res() res: Response,
   ): Promise<Response<ErrorResponse | void>> {
     const optionalBody = Optional.of(body)
 
     const commandResult = CloseCycleCommand.create(
+      user.id,
       optionalBody.getFromObject('id'),
       optionalBody.getFromObject('endDate'),
     )

@@ -14,10 +14,12 @@ export class MongoCycleRepository implements CycleRepository {
     private readonly mongoCycleMapper: MongoCycleMapper,
   ) {}
 
-  async findById(id: Id): Promise<Result<Optional<Cycle>>> {
+  async findById(userId: Id, id: Id): Promise<Result<Optional<Cycle>>> {
     const _id = new Types.ObjectId(id.toString())
+    const _userId = new Types.ObjectId(userId.toString())
+
     return this.mongoCycleModel
-      .findOne({ _id })
+      .findOne({ _id, userId: _userId })
       .then((cycle) => Optional.of(cycle))
       .then((optional) => optional.map((cycle) => this.mongoCycleMapper.map(cycle)))
       .then((cycle) => Result.ok(cycle))

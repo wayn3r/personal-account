@@ -1,23 +1,28 @@
-import { AuthGuard } from '@/auth/infrastructure'
+import { AuthGuard, CurrentUser } from '@/auth/infrastructure'
 import { CreateCycleCommand } from '@/cycles/application'
-import { Optional, Result } from '@/shared/domain/entities'
+import { Optional, Result, User } from '@/shared/domain'
 import { ErrorResponse, HttpController } from '@/shared/infrastruture'
 import { Controller, Post, Body, Res, UseGuards } from '@nestjs/common'
 import { Response } from 'express'
 
+type CreateCycleBody = {
+  name: string
+  startDate: string
+}
 @Controller('/cycles')
 @UseGuards(AuthGuard)
 export class CreateCycleController extends HttpController {
   @Post()
   public async create(
-    @Body() body: Record<string, any>,
+    @CurrentUser() user: User,
+    @Body() body: CreateCycleBody,
     @Res() res: Response,
   ): Promise<Response<ErrorResponse | void>> {
     const optionalBody = Optional.of(body)
 
     const commandResult = CreateCycleCommand.create(
+      user.id,
       optionalBody.getFromObject('name'),
-      optionalBody.getFromObject('userId'),
       optionalBody.getFromObject('startDate'),
     )
     if (commandResult.isFailure()) return this.handleError(res, commandResult)

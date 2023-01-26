@@ -1,11 +1,4 @@
-import {
-  Result,
-  DomainError,
-  Id,
-  AggregateRoot,
-  BadRequest,
-  Conflict,
-} from '@/shared/domain/entities'
+import { Result, DomainError, Id, AggregateRoot, BadRequest, Conflict } from '@/shared/domain/entities'
 
 export class Cycle extends AggregateRoot<Cycle> {
   public readonly id: Id

@@ -1,10 +1,10 @@
-import { Result } from '@/shared/domain'
+import { Id, Result } from '@/shared/domain'
 import { Transaction } from '../entities/transaction.entity'
 
 export interface TransactionRepository {
-  findOne(id: string): Promise<Result<Transaction>>
+  findOne(userId: Id, id: Id): Promise<Result<Transaction>>
   register(transaction: Transaction): Promise<Result>
-  remove(id: string): Promise<Result>
+  remove(userId: Id, id: Id): Promise<Result>
 }
 
 export const TransactionRepositoryProvider = 'TransactionRepository'

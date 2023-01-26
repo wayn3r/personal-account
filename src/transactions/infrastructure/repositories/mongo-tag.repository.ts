@@ -1,13 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose'
 import { Error as MongooseError, Model, Types } from 'mongoose'
 import { Id, Optional, Result } from '@/shared/domain/entities'
-import {
-  Tag,
-  TagDuplicated,
-  TagNameInvalid,
-  TagNotFound,
-  TagRepository,
-} from '@/transactions/domain'
+import { Tag, TagDuplicated, TagNameInvalid, TagNotFound, TagRepository } from '@/transactions/domain'
 import { TagMapper } from '../mappers'
 import { TagDocument } from '../schemas'
 
@@ -35,14 +29,17 @@ export class MongoTagRepository implements TagRepository {
     }
   }
 
-  public async removeTag(id: Id): Promise<Result> {
+  public async removeTag(userId: Id, id: Id): Promise<Result> {
     const tag = await this.tagModel.findOneAndUpdate(
-      { _id: new Types.ObjectId(id.toString()), active: true },
+      {
+        _id: new Types.ObjectId(id.toString()),
+        userId: new Types.ObjectId(userId.toString()),
+        active: true,
+      },
       { active: false },
     )
-    if (!tag) {
-      return new TagNotFound(id.toString())
-    }
+    if (!tag) return new TagNotFound(id.toString())
+
     return Result.ok()
   }
 

@@ -3,20 +3,11 @@ import { BadRequest, DomainError, Id, NotFound, Optional, Result } from '@/share
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 
-const UTC_DATE_REGEX =
-  /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{2,6})Z$/
+const UTC_DATE_REGEX = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{2,6})Z$/
 export class CloseCycleCommand {
-  private constructor(
-    public userId: Id,
-    public readonly id: Id,
-    public readonly endDate: Date,
-  ) {}
+  private constructor(public userId: Id, public readonly id: Id, public readonly endDate: Date) {}
 
-  static create(
-    userId: Id,
-    id: Optional<string>,
-    endDate: Optional<string>,
-  ): Result<CloseCycleCommand> {
+  static create(userId: Id, id: Optional<string>, endDate: Optional<string>): Result<CloseCycleCommand> {
     const idResult = Id.fromNullable(
       id,
       () => new BadRequest(DomainError.of('CYCLE_ID_REQUIRED')),
@@ -31,16 +22,12 @@ export class CloseCycleCommand {
       )
       .map((value) => new Date(value))
 
-    return Result.combine(idResult, endDateResult).map(
-      ([id, endDate]) => new CloseCycleCommand(userId, id, endDate),
-    )
+    return Result.combine(idResult, endDateResult).map(([id, endDate]) => new CloseCycleCommand(userId, id, endDate))
   }
 }
 
 @CommandHandler(CloseCycleCommand)
-export class CloseCycleCommandHandler
-  implements ICommandHandler<CloseCycleCommand, Result<void>>
-{
+export class CloseCycleCommandHandler implements ICommandHandler<CloseCycleCommand, Result<void>> {
   constructor(
     @Inject(CycleRepositoryProvider)
     private readonly cycleRepository: CycleRepository,
@@ -49,9 +36,8 @@ export class CloseCycleCommandHandler
   async execute(command: CloseCycleCommand): Promise<Result<void>> {
     const { userId, id, endDate } = command
 
-    const cycleResult = (await this.cycleRepository.findById(userId, id)).flatMap(
-      (optional) =>
-        optional.validateIsPresent(() => new NotFound(DomainError.of('CYCLE_NOT_FOUND'))),
+    const cycleResult = (await this.cycleRepository.findById(userId, id)).flatMap((optional) =>
+      optional.validateIsPresent(() => new NotFound(DomainError.of('CYCLE_NOT_FOUND'))),
     )
     if (cycleResult.isFailure()) return cycleResult
 

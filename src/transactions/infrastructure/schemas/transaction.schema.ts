@@ -5,6 +5,9 @@ import { Tag } from '@/transactions/domain'
 
 @Schema({ collection: COLLECTION_NAMES.TRANSACTION, versionKey: false })
 export class TransactionDocument {
+  @Prop({ required: true, type: Types.ObjectId })
+  userId: Types.ObjectId
+
   @Prop({ required: true, type: String })
   name: string
 

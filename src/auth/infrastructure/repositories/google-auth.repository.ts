@@ -19,11 +19,7 @@ export class GoogleAuthRepository implements AuthRepository {
     return await this.authClient
       .verifyIdToken({ idToken: token, audience: this.config.auth.google.clientId })
       .then((ticket) => Optional.of(ticket.getPayload()))
-      .then((optional) =>
-        optional.validateIsPresent(
-          () => new Unauthorized(DomainError.of('INVALID_TOKEN')),
-        ),
-      )
+      .then((optional) => optional.validateIsPresent(() => new Unauthorized(DomainError.of('INVALID_TOKEN'))))
       .then((result) => result.map((user) => user.sub))
       .catch((error) => Result.fail(error))
   }

@@ -12,6 +12,7 @@ export class TransactionMapper extends Mapper<MongoDocument, Transaction> {
       static load(): Transaction {
         return new Transaction({
           id: Id.load(from._id.toString()),
+          userId: Id.load(from.userId.toString()),
           name: from.name,
           amount: from.amount,
           currency: from.currency,
@@ -33,6 +34,7 @@ export class TransactionMapper extends Mapper<MongoDocument, Transaction> {
     const document = new TransactionDocument() as MongoDocument
 
     document._id = new Types.ObjectId(from.id.toString())
+    document.userId = new Types.ObjectId(from.userId.toString())
     document.name = from.name
     document.description = from.description
     document.amount = from.amount

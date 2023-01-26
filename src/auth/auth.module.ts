@@ -1,12 +1,7 @@
 import { OAuth2Client } from 'google-auth-library'
 import { Module } from '@nestjs/common'
 import { Config } from '@/config'
-import {
-  AuthControllers,
-  AuthGuard,
-  AuthMappers,
-  GoogleAuthRepository,
-} from './infrastructure'
+import { AuthControllers, AuthGuard, AuthMappers, GoogleAuthRepository } from './infrastructure'
 import { AuthRepositoryProvider } from './domain'
 import { AuthCommandHandlers } from './application'
 import { CqrsModule } from '@nestjs/cqrs'

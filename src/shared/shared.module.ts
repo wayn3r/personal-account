@@ -6,10 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose'
 @Module({
   imports: [MongooseModule.forFeature([{ name: User.name, schema: MongoUserSchema }])],
   controllers: [],
-  providers: [
-    ...SharedMappers,
-    { provide: UserRepositoryProvider, useClass: MongoUserRepository },
-  ],
+  providers: [...SharedMappers, { provide: UserRepositoryProvider, useClass: MongoUserRepository }],
   exports: [UserRepositoryProvider],
 })
 export class SharedModule {}

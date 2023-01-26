@@ -34,9 +34,7 @@ export class Id {
 
   static generate(): Id {
     const timestamp = ((new Date().getTime() / 1000) | 0).toString(16)
-    const sufix = 'xxxxxxxxxxxxxxxx'
-      .replace(/[x]/g, () => ((Math.random() * 16) | 0).toString(16))
-      .toLowerCase()
+    const sufix = 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, () => ((Math.random() * 16) | 0).toString(16)).toLowerCase()
 
     return new Id(timestamp + sufix)
   }

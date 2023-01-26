@@ -3,8 +3,8 @@ import { Tag } from '../entities/tag.entity'
 
 export interface TagRepository {
   createOne(name: Tag): Promise<Result>
-  removeTag(id: Id): Promise<Result>
-  findById(id: Id): Promise<Result<Optional<Tag>>>
+  removeTag(userId: Id, id: Id): Promise<Result>
+  findById(userId: Id, id: Id): Promise<Result<Optional<Tag>>>
 }
 
 export const TagRepositoryProvider = 'TagRepository'

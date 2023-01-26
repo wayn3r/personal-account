@@ -2,12 +2,7 @@ import { TagController } from './infrastructure/controllers/tag.controller'
 import { Module } from '@nestjs/common'
 import { CqrsModule } from '@nestjs/cqrs'
 import { MongooseModule } from '@nestjs/mongoose'
-import {
-  Tag,
-  TagRepositoryProvider,
-  Transaction,
-  TransactionRepositoryProvider,
-} from './domain'
+import { Tag, TagRepositoryProvider, Transaction, TransactionRepositoryProvider } from './domain'
 import { TransactionCommandHandlers } from './application'
 import {
   TransactionControllers,

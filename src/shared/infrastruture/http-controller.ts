@@ -2,13 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { HttpStatus, Logger } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { Response } from 'express'
-import {
-  BadRequest,
-  Failure,
-  DomainError,
-  NotFound,
-  Conflict,
-} from '@/shared/domain/entities'
+import { BadRequest, Failure, DomainError, NotFound, Conflict } from '@/shared/domain/entities'
 import { ErrorResponse } from './dtos'
 
 @Injectable()
@@ -16,10 +10,7 @@ export class HttpController {
   protected readonly logger: Logger
   protected readonly response: Response
 
-  constructor(
-    protected readonly queryBus: QueryBus,
-    protected readonly commandBus: CommandBus,
-  ) {
+  constructor(protected readonly queryBus: QueryBus, protected readonly commandBus: CommandBus) {
     this.logger = new Logger(this.constructor.name)
   }
 
@@ -51,11 +42,7 @@ export class HttpController {
     return res.status(HttpStatus.NO_CONTENT).send()
   }
 
-  protected badRequest(
-    res: Response,
-    error: DomainError,
-    message: string,
-  ): Response<ErrorResponse> {
+  protected badRequest(res: Response, error: DomainError, message: string): Response<ErrorResponse> {
     const errorResponse = new ErrorResponse({
       code: error.code,
       message,
@@ -63,11 +50,7 @@ export class HttpController {
     })
     return res.status(HttpStatus.BAD_REQUEST).json(errorResponse)
   }
-  protected notFound(
-    res: Response,
-    error: DomainError,
-    message: string,
-  ): Response<ErrorResponse> {
+  protected notFound(res: Response, error: DomainError, message: string): Response<ErrorResponse> {
     const errorResponse = new ErrorResponse({
       code: error.code,
       message,
@@ -75,11 +58,7 @@ export class HttpController {
     })
     return res.status(HttpStatus.NOT_FOUND).json(errorResponse)
   }
-  protected conflict(
-    res: Response,
-    error: DomainError,
-    message: string,
-  ): Response<ErrorResponse> {
+  protected conflict(res: Response, error: DomainError, message: string): Response<ErrorResponse> {
     const errorResponse = new ErrorResponse({
       code: error.code,
       message,
@@ -88,11 +67,7 @@ export class HttpController {
     return res.status(HttpStatus.CONFLICT).json(errorResponse)
   }
 
-  protected internalServerError(
-    res: Response,
-    error: DomainError,
-    message: string,
-  ): Response<ErrorResponse> {
+  protected internalServerError(res: Response, error: DomainError, message: string): Response<ErrorResponse> {
     const errorResponse = new ErrorResponse({
       code: error.code,
       message,

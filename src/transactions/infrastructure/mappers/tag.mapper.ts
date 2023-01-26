@@ -12,6 +12,7 @@ export class TagMapper extends Mapper<MongoDocument, Tag> {
       static load(): Tag {
         return new Tag({
           id: Id.load(from._id.toString()),
+          userId: Id.load(from.userId.toString()),
           name: from.name,
           active: from.active,
         })
@@ -24,6 +25,7 @@ export class TagMapper extends Mapper<MongoDocument, Tag> {
     const document = new TagDocument() as MongoDocument
 
     document._id = new Types.ObjectId(from.id.toString())
+    document.userId = new Types.ObjectId(from.userId.toString())
     document.name = from.name
     document.active = from.active
 

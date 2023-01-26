@@ -16,26 +16,17 @@ export class TransactionNameEmpty extends BadRequest {
 }
 export class TransactionNameInvalid extends BadRequest {
   constructor(name: string) {
-    super(
-      DomainError.of('TRANSACTION_NAME_INVALID'),
-      `Transaction name "${name}" is invalid`,
-    )
+    super(DomainError.of('TRANSACTION_NAME_INVALID'), `Transaction name "${name}" is invalid`)
   }
 }
 export class TransactionNameTooShort extends BadRequest {
   constructor(name: string) {
-    super(
-      DomainError.of('TRANSACTION_NAME_TOO_SHORT'),
-      `Transaction name "${name}" is too short`,
-    )
+    super(DomainError.of('TRANSACTION_NAME_TOO_SHORT'), `Transaction name "${name}" is too short`)
   }
 }
 export class TransactionNameTooLong extends BadRequest {
   constructor(name: string) {
-    super(
-      DomainError.of('TRANSACTION_NAME_TOO_LONG'),
-      `Transaction name "${name}" is too long`,
-    )
+    super(DomainError.of('TRANSACTION_NAME_TOO_LONG'), `Transaction name "${name}" is too long`)
   }
 }
 

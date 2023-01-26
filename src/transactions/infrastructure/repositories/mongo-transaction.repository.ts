@@ -1,13 +1,8 @@
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, QueryOptions, Types } from 'mongoose'
-import { DomainError, Result } from '@/shared/domain/entities'
+import { DomainError, Id, NotFound, Result } from '@/shared/domain'
 import { PaginatedResponse, PaginationQuery } from 'shared/infrastruture'
-import {
-  Tag,
-  Transaction,
-  TransactionError,
-  TransactionRepository,
-} from '@/transactions/domain'
+import { Tag, Transaction, TransactionError, TransactionRepository } from '@/transactions/domain'
 import { TransactionMapper } from '../mappers'
 import { TransactionDocument } from '../schemas'
 
@@ -18,9 +13,7 @@ export class MongoTransactionRepository implements TransactionRepository {
     private readonly transactionMapper: TransactionMapper,
   ) {}
 
-  public async findAll(
-    query: PaginationQuery,
-  ): Promise<Result<PaginatedResponse<Transaction>>> {
+  public async findAll(query: PaginationQuery): Promise<Result<PaginatedResponse<Transaction>>> {
     const { limit, page } = query
     const onlyActive = { active: true }
     const pagination: QueryOptions = {
@@ -58,9 +51,13 @@ export class MongoTransactionRepository implements TransactionRepository {
       .catch((error) => Result.fail(error))
   }
 
-  public async remove(id: string): Promise<Result> {
+  public async remove(userId: Id, id: Id): Promise<Result> {
     const transaction = await this.transactionModel.findOneAndUpdate(
-      { _id: new Types.ObjectId(id), active: true },
+      {
+        _id: new Types.ObjectId(id.toString()),
+        userId: new Types.ObjectId(userId.toString()),
+        active: true,
+      },
       { active: false },
     )
     if (!transaction) {
@@ -69,11 +66,15 @@ export class MongoTransactionRepository implements TransactionRepository {
     return Result.ok()
   }
 
-  public async findOne(id: string): Promise<Result<Transaction>> {
-    const transaction = await this.transactionModel.findById(new Types.ObjectId(id))
+  public async findOne(userId: Id, id: Id): Promise<Result<Transaction>> {
+    const transaction = await this.transactionModel.findOne({
+      _id: new Types.ObjectId(id.toString()),
+      userId: new Types.ObjectId(userId.toString()),
+      active: true,
+    })
 
     if (!transaction) {
-      return Result.fail(DomainError.of(TransactionError.TRANSACTION_NOT_FOUND))
+      return new NotFound(DomainError.of(TransactionError.TRANSACTION_NOT_FOUND))
     }
 
     return Result.ok(this.transactionMapper.map(transaction))

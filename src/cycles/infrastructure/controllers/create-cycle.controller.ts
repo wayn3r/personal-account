@@ -27,9 +27,7 @@ export class CreateCycleController extends HttpController {
     )
     if (commandResult.isFailure()) return this.handleError(res, commandResult)
 
-    const result = await this.commandBus.execute<CreateCycleCommand, Result>(
-      commandResult.getOrThrow(),
-    )
+    const result = await this.commandBus.execute<CreateCycleCommand, Result>(commandResult.getOrThrow())
     if (result.isFailure()) return this.handleError(res, result)
 
     this.logger.log('Cycle created successfully')

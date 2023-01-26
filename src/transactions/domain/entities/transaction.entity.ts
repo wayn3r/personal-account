@@ -1,11 +1,4 @@
-import {
-  AggregateRoot,
-  BadRequest,
-  DomainError,
-  Id,
-  Optional,
-  Result,
-} from '@/shared/domain/entities'
+import { AggregateRoot, BadRequest, DomainError, Id, Optional, Result } from '@/shared/domain/entities'
 import {
   TransactionNameEmpty,
   TransactionNameInvalid,
@@ -23,6 +16,7 @@ export class Transaction extends AggregateRoot<Transaction> {
   public static readonly MAX_NAME_LENGTH = 50
 
   public readonly id: Id
+  public readonly userId: Id
   public readonly name: string
   public readonly description?: string
   public readonly amount: number
@@ -34,7 +28,8 @@ export class Transaction extends AggregateRoot<Transaction> {
   public readonly date: Date
   public readonly createdAt: Date
 
-  public static create(optionalParams: {
+  public static create(params: {
+    userId: Id
     name: Optional<string>
     description: Optional<string>
     amount: Optional<number>
@@ -45,19 +40,20 @@ export class Transaction extends AggregateRoot<Transaction> {
     date: Optional<Date>
   }): Result<Transaction> {
     return Result.combine(
-      this.validateName(optionalParams.name),
-      this.validateDescription(optionalParams.description),
-      this.validateAmount(optionalParams.amount),
-      this.validateCurrency(optionalParams.currency),
-      this.validateType(optionalParams.type),
-      this.validateAccount(optionalParams.account),
-      this.validateTags(optionalParams.tags),
-      this.validateDate(optionalParams.date),
+      this.validateName(params.name),
+      this.validateDescription(params.description),
+      this.validateAmount(params.amount),
+      this.validateCurrency(params.currency),
+      this.validateType(params.type),
+      this.validateAccount(params.account),
+      this.validateTags(params.tags),
+      this.validateDate(params.date),
     )
       .map((values) => {
         const [name, description, amount, currency, type, account, tags, date] = values
         return new Transaction({
           id: Id.generate(),
+          userId: params.userId,
           name,
           description,
           amount,
@@ -117,25 +113,17 @@ export class Transaction extends AggregateRoot<Transaction> {
       .validate(
         (amount) => typeof amount === 'number',
         (amount) =>
-          new BadRequest(
-            DomainError.of('TRANSACTION_AMOUNT_INVALID'),
-            `Invalid transaction amount: ${amount}`,
-          ),
+          new BadRequest(DomainError.of('TRANSACTION_AMOUNT_INVALID'), `Invalid transaction amount: ${amount}`),
       )
   }
 
   static validateCurrency(currencyOrNull: Optional<string>): Result<string> {
     return currencyOrNull
-      .validateIsPresent(
-        () => new BadRequest(DomainError.of('TRANSACTION_CURRENCY_EMPTY')),
-      )
+      .validateIsPresent(() => new BadRequest(DomainError.of('TRANSACTION_CURRENCY_EMPTY')))
       .validate(
         (currency) => typeof currency === 'string',
         (currency) =>
-          new BadRequest(
-            DomainError.of('TRANSACTION_CURRENCY_INVALID'),
-            `Invalid transaction currency: ${currency}`,
-          ),
+          new BadRequest(DomainError.of('TRANSACTION_CURRENCY_INVALID'), `Invalid transaction currency: ${currency}`),
       )
       .map((currency) => currency.trim())
   }
@@ -145,27 +133,18 @@ export class Transaction extends AggregateRoot<Transaction> {
       .validateIsPresent(() => new BadRequest(DomainError.of('TRANSACTION_TYPE_EMPTY')))
       .validate(
         (type) => typeof type === 'string',
-        (type) =>
-          new BadRequest(
-            DomainError.of('TRANSACTION_TYPE_INVALID'),
-            `Invalid transaction type: ${type}`,
-          ),
+        (type) => new BadRequest(DomainError.of('TRANSACTION_TYPE_INVALID'), `Invalid transaction type: ${type}`),
       )
       .map((type) => type.trim())
   }
 
   static validateAccount(accountOrNull: Optional<string>): Result<string> {
     return accountOrNull
-      .validateIsPresent(
-        () => new BadRequest(DomainError.of('TRANSACTION_ACCOUNT_EMPTY')),
-      )
+      .validateIsPresent(() => new BadRequest(DomainError.of('TRANSACTION_ACCOUNT_EMPTY')))
       .validate(
         (account) => typeof account === 'string',
         (account) =>
-          new BadRequest(
-            DomainError.of('TRANSACTION_ACCOUNT_INVALID'),
-            `Invalid transaction account: ${account}`,
-          ),
+          new BadRequest(DomainError.of('TRANSACTION_ACCOUNT_INVALID'), `Invalid transaction account: ${account}`),
       )
       .map((account) => account.trim())
   }
@@ -184,11 +163,7 @@ export class Transaction extends AggregateRoot<Transaction> {
       .validateIsPresent(() => new BadRequest(DomainError.of('TRANSACTION_DATE_EMPTY')))
       .validate(
         (date) => date instanceof Date,
-        (date) =>
-          new BadRequest(
-            DomainError.of('TRANSACTION_DATE_INVALID'),
-            `Invalid transaction date: ${date}`,
-          ),
+        (date) => new BadRequest(DomainError.of('TRANSACTION_DATE_INVALID'), `Invalid transaction date: ${date}`),
       )
   }
 }

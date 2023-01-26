@@ -14,8 +14,7 @@ export class PaginationQuery {
 
   static create(page: Optional<number>, limit: Optional<number>): PaginationQuery {
     const isNumber = (value: any) => !isNaN(value)
-    const { minPage, maxPage, defaultPage, maxLimit, minLimit, defaultLimit } =
-      DEFAULT_PAGINATION_CONFIG
+    const { minPage, maxPage, defaultPage, maxLimit, minLimit, defaultLimit } = DEFAULT_PAGINATION_CONFIG
 
     const pageResult = page
       .filter((page) => isNumber(page))

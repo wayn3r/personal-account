@@ -5,10 +5,7 @@ type ArrayOfResultValues<T> = {
 }
 
 export class Result<T = void> {
-  protected constructor(
-    private readonly value: T,
-    protected readonly error?: DomainError,
-  ) {}
+  protected constructor(private readonly value: T, protected readonly error?: DomainError) {}
 
   public isFailure(): this is Failure {
     return this.error !== undefined && this.error !== null
@@ -41,9 +38,7 @@ export class Result<T = void> {
     return mapper(this.getOrThrow())
   }
 
-  public static combine<T extends Result<any>[]>(
-    ...results: [...T]
-  ): Result<ArrayOfResultValues<T>> {
+  public static combine<T extends Result<any>[]>(...results: [...T]): Result<ArrayOfResultValues<T>> {
     const values = []
     for (const result of results) {
       if (result.isFailure()) return result
@@ -53,10 +48,7 @@ export class Result<T = void> {
     return Result.ok(values as ArrayOfResultValues<T>)
   }
 
-  public validate(
-    predicate: (value: T) => boolean,
-    error: (value: T) => Failure,
-  ): Result<T> {
+  public validate(predicate: (value: T) => boolean, error: (value: T) => Failure): Result<T> {
     if (this.isFailure()) return this
 
     return predicate(this.getOrThrow()) ? this : error(this.getOrThrow())

@@ -3,20 +3,11 @@ import { BadRequest, Conflict, DomainError, Id, Optional, Result } from '@/share
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 
-const UTC_DATE_REGEX =
-  /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{2,6})Z$/
+const UTC_DATE_REGEX = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{2,6})Z$/
 export class CreateCycleCommand {
-  private constructor(
-    public readonly userId: Id,
-    public readonly name: string,
-    public readonly startDate: Date,
-  ) {}
+  private constructor(public readonly userId: Id, public readonly name: string, public readonly startDate: Date) {}
 
-  static create(
-    userId: Id,
-    name: Optional<string>,
-    startDate: Optional<string>,
-  ): Result<CreateCycleCommand> {
+  static create(userId: Id, name: Optional<string>, startDate: Optional<string>): Result<CreateCycleCommand> {
     const nameResult = name
       .validateIsPresent(() => new BadRequest(DomainError.of('NAME_REQUIRED')))
       .validate(
@@ -48,9 +39,7 @@ export class CreateCycleCommand {
 }
 
 @CommandHandler(CreateCycleCommand)
-export class CreateCycleCommandHandler
-  implements ICommandHandler<CreateCycleCommand, Result<void>>
-{
+export class CreateCycleCommandHandler implements ICommandHandler<CreateCycleCommand, Result<void>> {
   constructor(
     @Inject(CycleRepositoryProvider)
     private readonly cycleRepository: CycleRepository,

@@ -28,9 +28,7 @@ export class SigninCommand {
 }
 
 @CommandHandler(SigninCommand)
-export class SigninCommandHandler
-  implements ICommandHandler<SigninCommand, Result<void>>
-{
+export class SigninCommandHandler implements ICommandHandler<SigninCommand, Result<void>> {
   private readonly logger = new Logger(SigninCommandHandler.name)
   constructor(
     @Inject(AuthRepositoryProvider)
@@ -64,13 +62,10 @@ export class SigninCommandHandler
       .getExternalUser(token)
       .then((result) =>
         result.flatMap((profileOrNull) =>
-          profileOrNull.validateIsPresent(
-            () => new NotFound(DomainError.of('USER_NOT_FOUND')),
-          ),
+          profileOrNull.validateIsPresent(() => new NotFound(DomainError.of('USER_NOT_FOUND'))),
         ),
       )
-    if (externalUserResult.isFailure())
-      return this.logger.error(externalUserResult.toString())
+    if (externalUserResult.isFailure()) return this.logger.error(externalUserResult.toString())
 
     const externalUser = externalUserResult.getOrThrow()
 

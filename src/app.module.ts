@@ -10,7 +10,7 @@ import { Config } from './config'
 @Global()
 @Module({
   imports: [
-    ConfigModule.forRoot({ expandVariables: true }),
+    ConfigModule.forRoot({ expandVariables: true, envFilePath: ['.env', '.env.local', '.env.production'] }),
     MongooseModule.forRootAsync({
       inject: [Config],
       useFactory: (config: Config) => config.mongo,
